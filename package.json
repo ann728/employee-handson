@@ -1,0 +1,31 @@
+{
+  "name": "junie-redux",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "React+Vite 社員名簿アプリ (MUI, zustand, json-server)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "webapi": "json-server -p 8080 ./webapi/app_data.json",
+    "dev:all": "npm-run-all -p webapi dev"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
+    "axios": "^1.7.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.27.0",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.3",
+    "json-server": "^0.17.4",
+    "npm-run-all": "^4.1.5",
+    "vite": "^5.4.8"
+  }
+}
