@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { employeeService, masterService } from '../services/api'
+import { employeeService, masterService } from '../services/employeeService'
 
 const useEmployeesListStore = create((set, get) => ({
   employees: [],
@@ -42,7 +42,7 @@ const useEmployeesListStore = create((set, get) => ({
     } else {
       await employeeService.update(emp.id, emp)
     }
-    // Refresh to get expanded fields for department/role
+    
     const employees = await employeeService.list()
     set({ employees })
   },

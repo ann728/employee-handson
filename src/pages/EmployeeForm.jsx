@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react'
 import {Box, Button, Grid, MenuItem, Paper, TextField, Typography} from '@mui/material'
 import {useNavigate, useParams} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
-import {employeeService} from '../services/api'
+import {employeeService} from '../services/employeeService.js'
 
 const initial = {id: undefined, name: '', phone: '', departmentId: '', roleId: ''}
 

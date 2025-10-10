@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const api = axios.create({ baseURL: 'http://localhost:8080' })
 
-// Service functions
+
 export const employeeService = {
   async list() {
     const res = await api.get('/employees?_expand=department&_expand=role')
