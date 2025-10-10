@@ -1,0 +1,69 @@
+# Based on Vite default .gitignore + common Node/IDE/OS rules
+# See https://vitejs.dev/guide/static-deploy.html
+
+# Node modules
+node_modules/
+
+# Vite / build output
+dist/
+build/
+.vite/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environment variables
+.env
+.env.*.local
+.env.local
+.env.production.local
+.env.development.local
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Coverage
+coverage/
+coverage-final.json
+
+# Cache / misc
+.cache/
+*.tgz
+*.zip
+
+# Yarn (Berry) keep important files, ignore rest
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/patches
+.pnp.*
+
+# JetBrains / output
+/out/
+
+# Optional: local development data (uncomment if you want to ignore)
+# webapi/app_data.json
