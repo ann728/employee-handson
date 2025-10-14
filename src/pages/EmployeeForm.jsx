@@ -3,25 +3,48 @@ import {Box, Button, Grid, MenuItem, Paper, TextField, Typography} from '@mui/ma
 import {useNavigate, useParams} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
 import {employeeService} from '../services/employeeService.js'
+import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
+
 
 const initial = {id: undefined, name: '', phone: '', departmentId: '', roleId: ''}
 
 export default function EmployeeForm() {
     const navigate = useNavigate()
     const {id} = useParams()
-    const {roles, departments, saveEmployee, fetchMasters} = useEmployeesListStore()
+    const {roles, departments,fetchMasters} = useEmployeesListStore()
+
+    // useEmployeeDetailStore から詳細データを取得
+    const {
+        employee,
+        loading: storeLoading,
+        error: storeError,
+        fetchEmployeeById,
+        saveEmployee,
+        reset: resetDetailStore
+    } = useEmployeeDetailStore()
+
     const [model, setModel] = useState(initial)
     const [errors, setErrors] = useState({})
 
     useEffect(() => {
         async function load() {
             if (id) {
-                const data = await employeeService.get(id)
-                setModel({...data, departmentId: data.departmentId ?? '', roleId: data.roleId ?? ''})
+                // const data = await employeeService.get(id)
+                // setModel({...data, departmentId: data.departmentId ?? '', roleId: data.roleId ?? ''})
+                const data = await fetchEmployeeById(id)
+                setModel({
+                    ...data,
+                    departmentId: data.departmentId ?? '',
+                    roleId: data.roleId ?? ''
+                })
+            }else {
+                setModel(initial);
+                resetDetailStore();
+                setErrors({});
             }
         }
         load()
-    }, [id])
+    }, [id, fetchEmployeeById,resetDetailStore])
 
     useEffect(() => {
         if (!roles.length || !departments.length) {
@@ -45,7 +68,8 @@ export default function EmployeeForm() {
         setErrors(e)
         if (Object.keys(e).length) return
         const payload = {...model, departmentId: Number(model.departmentId), roleId: Number(model.roleId)}
-        await saveEmployee(payload)
+        // await saveEmployee(payload)
+        const result = await saveEmployee(model.id, payload)
         navigate('/')
     }
 

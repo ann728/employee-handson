@@ -6,7 +6,7 @@ const useEmployeeDetailStore = create((set, get) => ({
     loading: false,
     error: null,
 
-    async fetchEmployee(id) {
+    async fetchEmployeeById(id) {
         try {
             set({loading: true, error: null})
             const employee = await employeeService.get(id)
