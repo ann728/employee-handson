@@ -20,6 +20,20 @@
       "departmentId": 1,
       "roleId": 1,
       "id": 3
+    },
+    {
+      "name": "ｆ",
+      "phone": "09029503410",
+      "departmentId": 1,
+      "roleId": 1,
+      "id": 4
+    },
+    {
+      "name": "ｓｓ",
+      "phone": "09029503410",
+      "departmentId": 2,
+      "roleId": 1,
+      "id": 5
     }
   ],
   "roles": [

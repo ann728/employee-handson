@@ -1,214 +1,172 @@
-import React, {useEffect, useMemo, useState, useCallback} from 'react'
-import {Box, Button, Grid, MenuItem, Paper, TextField, Typography} from '@mui/material'
-import {useNavigate, useParams} from 'react-router-dom'
-import useEmployeesListStore from '../store/useEmployeesListStore.js'
-import {employeeService} from '../services/employeeService.js'
-import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
-import {useForm, Controller} from 'react-hook-form';
-
-
-const initial = {id: undefined, name: '', phone: '', departmentId: '', roleId: ''}
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Grid, MenuItem, Paper, TextField, Typography } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import useEmployeesListStore from '../store/useEmployeesListStore.js';
+import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js';
 
 export default function EmployeeForm() {
-    const navigate = useNavigate()
-    const {id} = useParams()
-    const {roles, departments, fetchMasters} = useEmployeesListStore()
+    const navigate = useNavigate();
+    const { id } = useParams();
 
-    // useEmployeeDetailStore から詳細データを取得
+    const { roles, departments, fetchMasters } = useEmployeesListStore();
+
     const {
-        employee,
+        id: employeeId,
+        name,
+        phone,
+        departmentId,
+        roleId,
         loading: storeLoading,
         error: storeError,
         fetchEmployeeById,
         saveEmployee,
-        reset: resetDetailStore
-    } = useEmployeeDetailStore()
+        reset: resetDetailStore,
+        setName,
+        setPhone,
+        setDepartmentId,
+        setRoleId,
+    } = useEmployeeDetailStore();
 
-    // const [model, setModel] = useState(initial)
-    // const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState({});
 
-    // useForm フックを初期化
-    const {
-        handleSubmit,
-        control,
-        reset,
-        formState: {errors},
-    } = useForm({
-        defaultValues: initial,
-    });
+    const validate = () => {
+        const currentErrors = {};
+        if (!name?.trim()) currentErrors.name = 'ユーザー名の入力は必須です';
+        if (!phone?.trim()) currentErrors.phone = '電話番号の入力は必須です';
+        else if (!/^0\d{9,10}$/.test(phone.replace(/[-\s]/g, ''))) currentErrors.phone = '電話番号の形式で入力してください';
+        if (!departmentId) currentErrors.departmentId = '所属は必須です';
+        if (!roleId) currentErrors.roleId = '権限は必須です';
+
+        setErrors(currentErrors);
+        return Object.keys(currentErrors).length === 0;
+    };
 
     useEffect(() => {
-        async function load() {
+        async function loadEmployeeData() {
             if (id) {
-                // const data = await employeeService.get(id)
-                // setModel({...data, departmentId: data.departmentId ?? '', roleId: data.roleId ?? ''})
-                const data = await fetchEmployeeById(id)
-                reset({
-                    ...data,
-                    departmentId: data.departmentId ?? '',
-                    roleId: data.roleId ?? ''
-                })
+                await fetchEmployeeById(id);
             } else {
-                reset(initial);
                 resetDetailStore();
-                // setErrors({});
+                setErrors({});
             }
         }
-
-        load()
-    }, [id, fetchEmployeeById, resetDetailStore, reset])
+        loadEmployeeData();
+    }, [id, fetchEmployeeById, resetDetailStore]);
 
     useEffect(() => {
         if (!roles.length || !departments.length) {
-            fetchMasters()
+            fetchMasters();
         }
-    }, [roles.length, departments.length, fetchMasters])
+    }, [roles.length, departments.length, fetchMasters]);
 
-    // const validate = useMemo(() => (m) => {
-    //     const e = {}
-    //     if (!m.name?.trim()) e.name = 'ユーザー名の入力は必須です'
-    //     if (!m.phone?.trim()) e.phone = '電話番号の入力は必須です'
-    //     else if (!/^0\d{9,10}$/.test(m.phone.replace(/[-\s]/g, ''))) e.phone = '電話番号の形式で入力してください'
-    //     if (!m.departmentId) e.departmentId = '所属は必須です'
-    //     if (!m.roleId) e.roleId = '権限は必須です'
-    //     return e
-    // }, [])
 
-    // const handleSubmit = async (ev) => {
-    //     ev.preventDefault()
-    //     const e = validate(model)
-    //     setErrors(e)
-    //     if (Object.keys(e).length) return
-    //     const payload = {...model, departmentId: Number(model.departmentId), roleId: Number(model.roleId)}
-    //     // await saveEmployee(payload)
-    //     const result = await saveEmployee(payload)
-    //     navigate('/')
-    // }
+    const onSubmit = async (ev) => {
+        ev.preventDefault();
 
-    const onSubmit = async (data) => {
-        const payload = {
-            ...data,
-            departmentId: data.departmentId === '' ? null : Number(data.departmentId),
-            roleId: data.roleId === '' ? null : Number(data.roleId),
-        };
-        const result = await saveEmployee(payload);
-        if (result) {
+        if (!validate()) {
+            return;
+        }
+
+        const success = await saveEmployee();
+        if (success) {
             navigate('/');
+        } else {
+            console.error("従業員の保存に失敗しました:", storeError);
         }
     };
 
+    if (storeLoading) {
+        return <Typography>Loading...</Typography>;
+    }
+    if (storeError) {
+        return <Typography color="error">Error: {storeError}</Typography>;
+    }
+
     return (
         <>
-            <Typography variant="h5">ユーザー設定</Typography>
-            <Box>
-                <Button variant="outlined" onClick={() => navigate('/')}>ユーザー一覧</Button>
-                <Button sx={{ml: 1}} type="submit" variant="contained">ユーザーの保存</Button>
-            </Box>
-            <Paper sx={{p: 3}} component="form" onSubmit={handleSubmit(onSubmit)}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                    <Typography variant="h5">ユーザー設定</Typography>
-                    <Box>
-                        <Button variant="outlined" onClick={() => navigate('/')}>ユーザー一覧</Button>
-                        <Button sx={{ml: 1}} type="submit" variant="contained">ユーザーの保存</Button>
-                    </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="h5">ユーザー設定</Typography>
+                <Box>
+                    <Button variant="outlined" onClick={() => navigate('/')}>ユーザー一覧</Button>
+                    <Button sx={{ ml: 1 }} type="submit" variant="contained" onClick={onSubmit}>ユーザーの保存</Button>
                 </Box>
+            </Box>
+
+            <Paper sx={{ p: 3 }} component="form" onSubmit={onSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Controller
-                            name="name"
-                            control={control}
-                            rules={{required: 'ユーザー名の入力は必須です'}}
-                            render={({field}) => (
-                                <TextField
-                                    {...field}
-                                    fullWidth
-                                    label="ユーザー名"
-                                    required
-                                    error={!!errors.name}
-                                    helperText={errors.name?.message}
-                                />
-                            )}
+                        <TextField
+                            fullWidth
+                            label="ユーザー名"
+                            required
+                            value={name}
+
+                            // onChange={(e) => set({ name: e.target.value })}
+                            onChange={(e) => setName(e.target.value)}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <Controller
-                            name="phone"
-                            control={control}
-                            rules={{
-                                required: '電話番号の入力は必須です',
-                                pattern: {
-                                    value: /^0\d{9,10}$/,
-                                    message: '電話番号の形式で入力してください',
-                                },
+                        <TextField
+                            fullWidth
+                            label="電話番号"
+                            required
+                            value={phone}
+
+                            onChange={(e) => {
+                                const formattedValue = e.target.value.replace(/[-\s]/g, '');
+                                // set({ phone: formattedValue });
+                                setPhone(formattedValue);
                             }}
-                            render={({field}) => (
-                                <TextField
-                                    {...field}
-                                    fullWidth
-                                    label="電話番号"
-                                    required
-                                    error={!!errors.phone}
-                                    helperText={errors.phone?.message}
-                                    onChange={(e) => {
-                                        const formattedValue = e.target.value.replace(/[-\s]/g, '');
-                                        field.onChange(formattedValue);
-                                    }}
-                                />
-                            )}
+                            error={!!errors.phone}
+                            helperText={errors.phone?.message}
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <Controller
-                            name="departmentId"
-                            control={control}
-                            rules={{required: '所属は必須です'}}
-                            render={({field}) => (
-                                <TextField
-                                    {...field}
-                                    select
-                                    fullWidth
-                                    label="所属"
-                                    required
-                                    error={!!errors.departmentId}
-                                    helperText={errors.departmentId?.message}
-                                >
-                                    <MenuItem value="">
-                                        <em>選択してください</em>
-                                    </MenuItem>
-                                    {departments.map((d) => (
-                                        <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>
-                                    ))}
-                                </TextField>
-                            )}
-                        />
+                        <TextField
+                            select
+                            fullWidth
+                            label="所属"
+                            required
+                            value={departmentId}
+
+                            // onChange={(e) => set({ departmentId: e.target.value })}
+                            onChange={(e) => setDepartmentId(e.target.value)}
+                            error={!!errors.departmentId}
+                            helperText={errors.departmentId?.message}
+                        >
+                            <MenuItem value="">
+                                <em>選択してください</em>
+                            </MenuItem>
+                            {departments.map((d) => (
+                                <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>
+                            ))}
+                        </TextField>
                     </Grid>
                     <Grid item xs={12}>
-                        <Controller
-                            name="roleId"
-                            control={control}
-                            rules={{required: '権限は必須です'}}
-                            render={({field}) => (
-                                <TextField
-                                    {...field}
-                                    select
-                                    fullWidth
-                                    label="権限"
-                                    required
-                                    error={!!errors.roleId}
-                                    helperText={errors.roleId?.message}
-                                >
-                                    <MenuItem value="">
-                                        <em>選択してください</em>
-                                    </MenuItem>
-                                    {roles.map((r) => (
-                                        <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
-                                    ))}
-                                </TextField>
-                            )}
-                        />
+                        <TextField
+                            select
+                            fullWidth
+                            label="権限"
+                            required
+                            value={roleId}
+
+                            // onChange={(e) => set({ roleId: e.target.value })}
+                            onChange={(e) => setRoleId(e.target.value)}
+                            error={!!errors.roleId}
+                            helperText={errors.roleId?.message}
+                        >
+                            <MenuItem value="">
+                                <em>選択してください</em>
+                            </MenuItem>
+                            {roles.map((r) => (
+                                <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                            ))}
+                        </TextField>
                     </Grid>
                 </Grid>
             </Paper>
         </>
-    )
+    );
 }

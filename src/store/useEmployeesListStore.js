@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import {employeeService,masterService} from '../services/employeeService'
+import {employeeService,masterService} from '../services/api'
 
 const useEmployeesListStore = create((set, get) => ({
     employees: [],
@@ -8,9 +8,11 @@ const useEmployeesListStore = create((set, get) => ({
     loading: false,
     error: null,
 
+
+
     async fetchMasters() {
       try {
-        set({ loading: true, error: null })
+        set({ loading: true, error: null });
         const [roles, departments] = await Promise.all([
           masterService.roles(),
           masterService.departments(),
