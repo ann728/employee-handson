@@ -69,7 +69,7 @@ export default function EmployeeForm() {
         if (Object.keys(e).length) return
         const payload = {...model, departmentId: Number(model.departmentId), roleId: Number(model.roleId)}
         // await saveEmployee(payload)
-        const result = await saveEmployee(model.id, payload)
+        const result = await saveEmployee(payload);
         navigate('/')
     }
 
