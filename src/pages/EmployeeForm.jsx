@@ -31,10 +31,10 @@ export default function EmployeeForm() {
     const {
         handleSubmit,
         control,
-        reset, // フォームの値をリセットするために使用
-        formState: {errors}, // バリデーションエラーを取得 (以前の errors state を代替)
+        reset,
+        formState: {errors},
     } = useForm({
-        defaultValues: initial, // 既存の initial を defaultValues として使用
+        defaultValues: initial,
     });
 
     useEffect(() => {

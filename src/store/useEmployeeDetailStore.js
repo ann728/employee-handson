@@ -26,8 +26,7 @@ const useEmployeeDetailStore = create((set, get) => ({
             await employeeService.update(emp.id, emp)
         }
 
-        const employees = await employeeService.list()
-        set({employees})
+        return true;
     },
 
     reset: () => set({ employee: null, loading: false, error: null }),
