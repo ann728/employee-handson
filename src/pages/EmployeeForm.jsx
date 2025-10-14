@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState,useCallback} from 'react'
 import {Box, Button, Grid, MenuItem, Paper, TextField, Typography} from '@mui/material'
 import {useNavigate, useParams} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
@@ -7,6 +7,17 @@ import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
 
 
 const initial = {id: undefined, name: '', phone: '', departmentId: '', roleId: ''}
+
+
+const validate =(m) => {
+    const e = {}
+    if (!m.name?.trim()) e.name = 'ユーザー名の入力は必須です'
+    if (!m.phone?.trim()) e.phone = '電話番号の入力は必須です'
+    else if (!/^0\d{9,10}$/.test(m.phone.replace(/[-\s]/g, ''))) e.phone = '電話番号の形式で入力してください'
+    if (!m.departmentId) e.departmentId = '所属は必須です'
+    if (!m.roleId) e.roleId = '権限は必須です'
+    return e
+};
 
 export default function EmployeeForm() {
     const navigate = useNavigate()
@@ -25,6 +36,15 @@ export default function EmployeeForm() {
 
     const [model, setModel] = useState(initial)
     const [errors, setErrors] = useState({})
+
+
+
+    // フォーム全体のバリデーションを実行する関数
+    const validateForm = useCallback(() => {
+        const newErrors = validate(model); // 外で定義したバリデーションルール関数を呼び出す
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // エラーがなければtrue
+    }, [model]); // model が変更されたら validateForm も再生成される
 
     useEffect(() => {
         async function load() {
@@ -52,15 +72,15 @@ export default function EmployeeForm() {
         }
     }, [roles.length, departments.length, fetchMasters])
 
-    const validate = useMemo(() => (m) => {
-        const e = {}
-        if (!m.name?.trim()) e.name = 'ユーザー名の入力は必須です'
-        if (!m.phone?.trim()) e.phone = '電話番号の入力は必須です'
-        else if (!/^0\d{9,10}$/.test(m.phone.replace(/[-\s]/g, ''))) e.phone = '電話番号の形式で入力してください'
-        if (!m.departmentId) e.departmentId = '所属は必須です'
-        if (!m.roleId) e.roleId = '権限は必須です'
-        return e
-    }, [])
+    // const validate = useMemo(() => (m) => {
+    //     const e = {}
+    //     if (!m.name?.trim()) e.name = 'ユーザー名の入力は必須です'
+    //     if (!m.phone?.trim()) e.phone = '電話番号の入力は必須です'
+    //     else if (!/^0\d{9,10}$/.test(m.phone.replace(/[-\s]/g, ''))) e.phone = '電話番号の形式で入力してください'
+    //     if (!m.departmentId) e.departmentId = '所属は必須です'
+    //     if (!m.roleId) e.roleId = '権限は必須です'
+    //     return e
+    // }, [])
 
     const handleSubmit = async (ev) => {
         ev.preventDefault()
@@ -69,7 +89,7 @@ export default function EmployeeForm() {
         if (Object.keys(e).length) return
         const payload = {...model, departmentId: Number(model.departmentId), roleId: Number(model.roleId)}
         // await saveEmployee(payload)
-        const result = await saveEmployee(payload);
+        const result = await saveEmployee(payload)
         navigate('/')
     }
 
