@@ -22,8 +22,10 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {useNavigate} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
+
 
 export default function EmployeeList() {
     const navigate = useNavigate()
@@ -43,11 +45,9 @@ export default function EmployeeList() {
     const filtered = useMemo(() => {
         const term = q.trim().toLowerCase()
         if (!term) return employees
-        return employees.filter((e) =>
-            [e.name, e.phone, e.department?.name, e.role?.name]
-                .filter(Boolean)
-                .some((v) => String(v).toLowerCase().includes(term))
-        )
+        return employees.filter((e) => [e.name, e.phone, e.department?.name, e.role?.name]
+            .filter(Boolean)
+            .some((v) => String(v).toLowerCase().includes(term)))
     }, [employees, q])
 
     // ダイアログを開く
@@ -94,73 +94,78 @@ export default function EmployeeList() {
         return sorted;
     }, [filtered, order, orderBy]);
 
-    return (
-        <Box>
-            <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                <Typography variant="h5">ユーザー一覧</Typography>
-                <Button variant="contained" onClick={() => navigate('/new')}>ユーザーの作成</Button>
-            </Box>
-            <TextField fullWidth size="small" placeholder="検索" value={q} onChange={(e) => setQ(e.target.value)}
-                       sx={{mb: 2}}/>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>
-                                <TableSortLabel
-                                    active={orderBy === 'name'}
-                                    direction={orderBy === 'name' ? order : 'asc'}
-                                    onClick={() => handleRequestSort('name')}
-                                >
-                                    ユーザー名
-                                </TableSortLabel>
-                            </TableCell>
-                            <TableCell>電話番号</TableCell>
-                            <TableCell>部署</TableCell>
-                            <TableCell>権限</TableCell>
-                            <TableCell align="right">アクション</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-
-                        {sortedRows.map((e) => (
-                            <TableRow key={e.id} hover>
-                                <TableCell>
-                                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                                        <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
-                                        {e.name}
-                                    </Box>
-                                </TableCell>
-                                <TableCell>{e.phone}</TableCell>
-                                <TableCell>{e.department?.name}</TableCell>
-                                <TableCell>{e.role?.name}</TableCell>
-                                <TableCell align="right">
-                                    <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
-                                        <EditIcon/>
-                                    </IconButton>
-                                    <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
-                                        <DeleteIcon/>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-
-
-            <Dialog open={openDialog} onClose={handleCloseDialog}>
-                <DialogTitle>削除の確認</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        本当にこのユーザーを削除してもよろしいですか？
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog}>キャンセル</Button>
-                    <Button color="error" onClick={handleDelete}>削除</Button>
-                </DialogActions>
-            </Dialog>
+    return (<Box>
+        <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
+            <Typography variant="h5">ユーザー一覧</Typography>
+            <Button variant="contained" onClick={() => navigate('/new')}>ユーザーの作成</Button>
         </Box>
-    )
+        <TextField fullWidth size="small" placeholder="検索" value={q} onChange={(e) => setQ(e.target.value)}
+                   sx={{mb: 2}}/>
+        <TableContainer component={Paper}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>
+                            <TableSortLabel
+                                active={orderBy === 'name'}
+                                direction={orderBy === 'name' ? order : 'asc'}
+                                onClick={() => handleRequestSort('name')}
+                            >
+                                ユーザー名
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell>電話番号</TableCell>
+                        <TableCell>部署</TableCell>
+                        <TableCell>権限</TableCell>
+                        <TableCell align="right">アクション</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+
+                    {sortedRows.map((e) => (<TableRow key={e.id} hover>
+                        <TableCell>
+                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
+                                {e.name}
+                            </Box>
+                        </TableCell>
+                        <TableCell>{e.phone}</TableCell>
+                        <TableCell>{e.department?.name}</TableCell>
+                        <TableCell>{e.role?.name}</TableCell>
+                        <TableCell align="right">
+                            <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
+                                <EditIcon/>
+                            </IconButton>
+                            <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
+                                <DeleteIcon/>
+                            </IconButton>
+                        </TableCell>
+                    </TableRow>))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+
+
+        <Dialog
+            open={openDialog}
+            onClose={handleCloseDialog}
+            sx={{'& .MuiDialog-paper': {p: 2,},}}
+        >
+            <DialogTitle>
+                <Box display="flex" alignItems="center" gap={1}>
+                    <InfoOutlineIcon/>削除の確認
+                </Box>
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    本当にこのユーザーを削除してもよろしいですか？
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>
+                <Button color="error" variant="contained" onClick={handleDelete}
+                        startIcon={<DeleteIcon/>}>削除</Button>
+            </DialogActions>
+        </Dialog>
+    </Box>)
 }

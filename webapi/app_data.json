@@ -1,39 +1,11 @@
 {
   "employees": [
     {
-      "name": "あ",
-      "phone": "09029503410",
-      "departmentId": 1,
-      "roleId": 2,
-      "id": 49
-    },
-    {
-      "name": "あ",
-      "phone": "09029503410",
-      "departmentId": 2,
-      "roleId": 1,
-      "id": 50
-    },
-    {
       "name": "い",
       "phone": "09029503410",
       "departmentId": 1,
       "roleId": 1,
       "id": 51
-    },
-    {
-      "name": "あ",
-      "phone": "09029503410",
-      "departmentId": 3,
-      "roleId": 1,
-      "id": 52
-    },
-    {
-      "name": "あ",
-      "phone": "09029503410",
-      "departmentId": 1,
-      "roleId": 1,
-      "id": 53
     }
   ],
   "roles": [
