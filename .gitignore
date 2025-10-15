@@ -66,4 +66,4 @@ coverage-final.json
 /out/
 
 # Optional: local development data (uncomment if you want to ignore)
-# webapi/app_data.json
+webapi/app_data.json
