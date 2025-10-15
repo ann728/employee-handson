@@ -72,7 +72,8 @@ export default function EmployeeForm() {
         console.log("submit data:", data);
         const payload = {
             ...data,
-            id: data.id ? Number(data.id) : undefined,
+            // id: data.id ? Number(data.id) : undefined,
+            id: id,
             departmentId: data.departmentId === '' ? null : Number(data.departmentId),
             roleId: data.roleId === '' ? null : Number(data.roleId),
         };
@@ -97,9 +98,7 @@ export default function EmployeeForm() {
                 </Box>
             </Box>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <input type="hidden" {...register("id")} />
-                </Grid>
+
                 <Grid item xs={12}>
                     <Controller
                         name="name"
