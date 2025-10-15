@@ -35,19 +35,6 @@ const useEmployeesListStore = create((set, get) => ({
         }
     },
 
-
-    // async saveEmployee(emp) {
-    //   const isNew = !emp.id
-    //   if (isNew) {
-    //     await employeeService.create(emp)
-    //   } else {
-    //     await employeeService.update(emp.id, emp)
-    //   }
-    //
-    //   const employees = await employeeService.list()
-    //   set({ employees })
-    // },
-
     async deleteEmployee(id) {
         await employeeService.remove(id)
         set({employees: get().employees.filter((e) => e.id !== id)})

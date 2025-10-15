@@ -5,27 +5,36 @@ import useEmployeesListStore from '../store/useEmployeesListStore.js'
 import {employeeService} from '../services/employeeService.js'
 import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
 import {useForm, Controller} from 'react-hook-form';
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from 'zod';
 
 
 const initial = {id: undefined, name: '', phone: '', departmentId: '', roleId: ''}
 
+export const employeeSchema = z.object({
+    name: z.string().min(1, "名前は必須です"),
+    phone: z
+        .string()
+        .min(1, "電話番号は必須です")
+        .regex(/^0\d{9,10}$/, "電話番号の形式で入力してください"),
+    departmentId: z.string().min(1, "所属は必須です"),
+    roleId: z.string().min(1, "権限は必須です"),
+})
+
+
 export default function EmployeeForm() {
+
     const navigate = useNavigate()
     const {id} = useParams()
     const {roles, departments, fetchMasters} = useEmployeesListStore()
 
     // useEmployeeDetailStore から詳細データを取得
     const {
-        employee,
         loading: storeLoading,
         error: storeError,
         fetchEmployeeById,
         saveEmployee,
-        reset: resetDetailStore
     } = useEmployeeDetailStore()
-
-    // const [model, setModel] = useState(initial)
-    // const [errors, setErrors] = useState({})
 
     // useForm フックを初期化
     const {
@@ -34,14 +43,14 @@ export default function EmployeeForm() {
         reset,
         formState: {errors},
     } = useForm({
+        resolver: zodResolver(employeeSchema),
         defaultValues: initial,
     });
 
     useEffect(() => {
         async function load() {
             if (id) {
-                // const data = await employeeService.get(id)
-                // setModel({...data, departmentId: data.departmentId ?? '', roleId: data.roleId ?? ''})
+
                 const data = await fetchEmployeeById(id)
                 reset({
                     ...data,
@@ -50,40 +59,17 @@ export default function EmployeeForm() {
                 })
             } else {
                 reset(initial);
-                resetDetailStore();
-                // setErrors({});
             }
         }
 
         load()
-    }, [id, fetchEmployeeById, resetDetailStore, reset])
+    }, [id, fetchEmployeeById, reset])
 
     useEffect(() => {
         if (!roles.length || !departments.length) {
             fetchMasters()
         }
     }, [roles.length, departments.length, fetchMasters])
-
-    // const validate = useMemo(() => (m) => {
-    //     const e = {}
-    //     if (!m.name?.trim()) e.name = 'ユーザー名の入力は必須です'
-    //     if (!m.phone?.trim()) e.phone = '電話番号の入力は必須です'
-    //     else if (!/^0\d{9,10}$/.test(m.phone.replace(/[-\s]/g, ''))) e.phone = '電話番号の形式で入力してください'
-    //     if (!m.departmentId) e.departmentId = '所属は必須です'
-    //     if (!m.roleId) e.roleId = '権限は必須です'
-    //     return e
-    // }, [])
-
-    // const handleSubmit = async (ev) => {
-    //     ev.preventDefault()
-    //     const e = validate(model)
-    //     setErrors(e)
-    //     if (Object.keys(e).length) return
-    //     const payload = {...model, departmentId: Number(model.departmentId), roleId: Number(model.roleId)}
-    //     // await saveEmployee(payload)
-    //     const result = await saveEmployee(payload)
-    //     navigate('/')
-    // }
 
     const onSubmit = async (data) => {
         const payload = {
@@ -117,13 +103,12 @@ export default function EmployeeForm() {
                         <Controller
                             name="name"
                             control={control}
-                            rules={{required: 'ユーザー名の入力は必須です'}}
                             render={({field}) => (
                                 <TextField
                                     {...field}
                                     fullWidth
                                     label="ユーザー名"
-                                    required
+                                    // required
                                     error={!!errors.name}
                                     helperText={errors.name?.message}
                                 />
@@ -134,19 +119,12 @@ export default function EmployeeForm() {
                         <Controller
                             name="phone"
                             control={control}
-                            rules={{
-                                required: '電話番号の入力は必須です',
-                                pattern: {
-                                    value: /^0\d{9,10}$/,
-                                    message: '電話番号の形式で入力してください',
-                                },
-                            }}
                             render={({field}) => (
                                 <TextField
                                     {...field}
                                     fullWidth
                                     label="電話番号"
-                                    required
+                                    // required
                                     error={!!errors.phone}
                                     helperText={errors.phone?.message}
                                     onChange={(e) => {
@@ -161,14 +139,13 @@ export default function EmployeeForm() {
                         <Controller
                             name="departmentId"
                             control={control}
-                            rules={{required: '所属は必須です'}}
                             render={({field}) => (
                                 <TextField
                                     {...field}
                                     select
                                     fullWidth
                                     label="所属"
-                                    required
+                                    // required
                                     error={!!errors.departmentId}
                                     helperText={errors.departmentId?.message}
                                 >
@@ -176,7 +153,7 @@ export default function EmployeeForm() {
                                         <em>選択してください</em>
                                     </MenuItem>
                                     {departments.map((d) => (
-                                        <MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>
+                                        <MenuItem key={d.id} value={d.id.toString()}>{d.name}</MenuItem>
                                     ))}
                                 </TextField>
                             )}
@@ -186,14 +163,13 @@ export default function EmployeeForm() {
                         <Controller
                             name="roleId"
                             control={control}
-                            rules={{required: '権限は必須です'}}
                             render={({field}) => (
                                 <TextField
                                     {...field}
                                     select
                                     fullWidth
                                     label="権限"
-                                    required
+                                    // required
                                     error={!!errors.roleId}
                                     helperText={errors.roleId?.message}
                                 >
@@ -201,7 +177,7 @@ export default function EmployeeForm() {
                                         <em>選択してください</em>
                                     </MenuItem>
                                     {roles.map((r) => (
-                                        <MenuItem key={r.id} value={r.id}>{r.name}</MenuItem>
+                                        <MenuItem key={r.id} value={r.id.toString()}>{r.name}</MenuItem>
                                     ))}
                                 </TextField>
                             )}

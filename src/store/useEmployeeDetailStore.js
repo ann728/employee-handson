@@ -1,6 +1,7 @@
 import {create} from 'zustand'
 import {employeeService} from '../services/employeeService'
 
+//詳細画面専用のストア
 const useEmployeeDetailStore = create((set, get) => ({
     employee: null,
     loading: false,
@@ -11,6 +12,7 @@ const useEmployeeDetailStore = create((set, get) => ({
             set({loading: true, error: null})
             const employee = await employeeService.get(id)
             set({employee})
+            return employee;
         } catch (e) {
             set({error: e.message})
         } finally {
@@ -18,6 +20,7 @@ const useEmployeeDetailStore = create((set, get) => ({
         }
     },
 
+    //ID有無で新規 or 更新を判定して API 呼び出し
     async saveEmployee(emp) {
         const isNew = !emp.id
         if (isNew) {
@@ -29,7 +32,7 @@ const useEmployeeDetailStore = create((set, get) => ({
         return true;
     },
 
-    reset: () => set({ employee: null, loading: false, error: null }),
+
 }))
 
 export default useEmployeeDetailStore
