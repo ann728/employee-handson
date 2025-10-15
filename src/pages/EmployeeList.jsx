@@ -17,7 +17,8 @@ import {
     DialogActions,
     DialogContent,
     DialogContentText,
-    DialogTitle
+    DialogTitle,
+    TableSortLabel,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -31,6 +32,9 @@ export default function EmployeeList() {
 
     const [openDialog, setOpenDialog] = useState(false)
     const [selectedId, setSelectedId] = useState(null)
+
+    const [order, setOrder] = useState('asc'); // 昇順か降順か
+    const [orderBy, setOrderBy] = useState('name'); // どの列でソートするか
 
     useEffect(() => {
         fetchEmployees()
@@ -65,6 +69,31 @@ export default function EmployeeList() {
         handleCloseDialog()
     }
 
+    const handleRequestSort = (property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+    const sortedRows = useMemo(() => {
+        const sorted = [...filtered];
+        sorted.sort((a, b) => {
+
+            const nameOrder = order === 'asc' ? 1 : -1;
+            const aName = a.name || '';
+            const bName = b.name || '';
+            if (aName < bName) return -1 * nameOrder;
+            if (aName > bName) return 1 * nameOrder;
+
+            // 第2ソート: 部署名
+            const deptCompare = (a.department?.name || '').localeCompare(b.department?.name || '');
+            if (deptCompare !== 0) return deptCompare;
+
+            return 0;
+        });
+        return sorted;
+    }, [filtered, order, orderBy]);
+
     return (
         <Box>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
@@ -77,7 +106,15 @@ export default function EmployeeList() {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>ユーザー名</TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === 'name'}
+                                    direction={orderBy === 'name' ? order : 'asc'}
+                                    onClick={() => handleRequestSort('name')}
+                                >
+                                    ユーザー名
+                                </TableSortLabel>
+                            </TableCell>
                             <TableCell>電話番号</TableCell>
                             <TableCell>部署</TableCell>
                             <TableCell>権限</TableCell>
@@ -85,7 +122,8 @@ export default function EmployeeList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filtered.map((e) => (
+
+                        {sortedRows.map((e) => (
                             <TableRow key={e.id} hover>
                                 <TableCell>
                                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>

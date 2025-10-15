@@ -11,6 +11,7 @@ const useEmployeeDetailStore = create((set, get) => ({
         try {
             set({loading: true, error: null})
             const employee = await employeeService.get(id)
+
             set({employee})
             return employee;
         } catch (e) {
@@ -22,7 +23,8 @@ const useEmployeeDetailStore = create((set, get) => ({
 
     //ID有無で新規 or 更新を判定して API 呼び出し
     async saveEmployee(emp) {
-        const isNew = !emp.id
+        const idNum = Number(emp.id);
+        const isNew = !idNum;
         if (isNew) {
             await employeeService.create(emp)
         } else {
