@@ -12,7 +12,12 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Typography
+    Typography,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -23,6 +28,9 @@ export default function EmployeeList() {
     const navigate = useNavigate()
     const {employees, fetchEmployees, deleteEmployee} = useEmployeesListStore()
     const [q, setQ] = useState('')
+
+    const [openDialog, setOpenDialog] = useState(false)
+    const [selectedId, setSelectedId] = useState(null)
 
     useEffect(() => {
         fetchEmployees()
@@ -37,6 +45,25 @@ export default function EmployeeList() {
                 .some((v) => String(v).toLowerCase().includes(term))
         )
     }, [employees, q])
+
+    // ダイアログを開く
+    const handleOpenDialog = (id) => {
+        setSelectedId(id)
+        setOpenDialog(true)
+    }
+
+    // ダイアログを閉じる
+    const handleCloseDialog = () => {
+        setOpenDialog(false)
+        setSelectedId(null)
+    }
+
+    const handleDelete = () => {
+        if (selectedId !== null) {
+            deleteEmployee(selectedId)
+        }
+        handleCloseDialog()
+    }
 
     return (
         <Box>
@@ -73,7 +100,7 @@ export default function EmployeeList() {
                                     <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
                                         <EditIcon/>
                                     </IconButton>
-                                    <IconButton color="error" onClick={() => deleteEmployee(e.id)}>
+                                    <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
                                         <DeleteIcon/>
                                     </IconButton>
                                 </TableCell>
@@ -82,6 +109,20 @@ export default function EmployeeList() {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+
+            <Dialog open={openDialog} onClose={handleCloseDialog}>
+                <DialogTitle>削除の確認</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        本当にこのユーザーを削除してもよろしいですか？
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>キャンセル</Button>
+                    <Button color="error" onClick={handleDelete}>削除</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }

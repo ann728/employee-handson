@@ -1,13 +1,6 @@
 {
   "employees": [
     {
-      "name": "r",
-      "phone": "09029503410",
-      "departmentId": 1,
-      "roleId": 1,
-      "id": 1
-    },
-    {
       "name": "ｓ",
       "phone": "09029503410",
       "departmentId": 2,
@@ -31,9 +24,9 @@
     {
       "name": "tax-02-frontend-cndojo003",
       "phone": "09029503410",
-      "departmentId": 1,
-      "roleId": 1,
-      "id": 5
+      "departmentId": 2,
+      "roleId": 2,
+      "id": 6
     }
   ],
   "roles": [
