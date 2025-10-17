@@ -29,8 +29,11 @@ import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {useNavigate} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
 
+const Transition = forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
-export default function EmployeeList() {
+ function EmployeeList() {
     const navigate = useNavigate()
     const {employees, fetchEmployees, deleteEmployee} = useEmployeesListStore()
     const [q, setQ] = useState('')
@@ -43,12 +46,6 @@ export default function EmployeeList() {
 
     // どの列でソートするか
     const [orderBy, setOrderBy] = useState('name');
-
-    const Transition = forwardRef(function Transition(props, ref) {
-        return <Slide direction="up" ref={ref} {...props} />;
-    });
-
-
 
     useEffect(() => {
         fetchEmployees()
@@ -227,7 +224,9 @@ export default function EmployeeList() {
             open={openDialog}
             onClose={handleCloseDialog}
             sx={{'& .MuiDialog-paper': {p: 2}}}
-            TransitionComponent={Transition}
+            slots={{
+                transition: Transition,
+            }}
         >
             {/*<DialogTitle>*/}
             {/*    <Box display="flex" alignItems="center" gap={1}>*/}
@@ -255,3 +254,4 @@ export default function EmployeeList() {
         </Dialog>
     </Box>)
 }
+export default EmployeeList;
