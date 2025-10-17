@@ -121,17 +121,21 @@ function EmployeeList() {
 
             if (primaryCompare !== 0) return primaryCompare;
 
-            // 第2ソートは常に昇順
+            // 第2・第3ソートをルールに従って追加
             if (orderBy === 'name') {
-                const aDept = a.department?.name || '';
-                const bDept = b.department?.name || '';
-                return aDept.localeCompare(bDept);
+                // ユーザー名ソート時 → 第2ソートはID順
+                // console.log("nameCompare:", a.name, b.name, nameCompare, a.id, b.id)
+                return a.id - b.id;
             } else {
-                const aName = a.name || '';
-                const bName = b.name || '';
-                return aName.localeCompare(bName);
+                // その他列ソート時 → 第2: ユーザー名、第3: ID
+                const nameCompare = (a.name || '').localeCompare(b.name || '');
+                // if (nameCompare !== 0) return nameCompare;
+                // console.log("nameCompare:", a.name, b.name, nameCompare, a.id, b.id)
+                return a.id - b.id;
+
             }
-        })
+        });
+
     }, [filtered, order, orderBy])
 
     return (<Box>

@@ -23,6 +23,11 @@ export default function App() {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             社員名簿
           </Typography>
+            {/*<Button>ダッシュボード</Button>*/}
+            {/*<Menu>*/}
+            {/*    <MenuItem>ユーザー一覧</MenuItem>*/}
+            {/*    <MenuItem>ユーザーの作成</MenuItem>*/}
+            {/*</Menu>*/}
           <Button variant="contained" onClick={() => navigate('/')}>ユーザー一覧</Button>
           <Button sx={{ ml: 1 }} variant="outlined" onClick={() => navigate('/new')}>ユーザーの作成</Button>
         </Toolbar>
