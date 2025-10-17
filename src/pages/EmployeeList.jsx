@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react'
+import React, {useEffect, useMemo, useState,forwardRef} from 'react'
 import {
     Avatar,
     Box,
@@ -19,9 +19,12 @@ import {
     DialogContentText,
     DialogTitle,
     TableSortLabel,
+    Alert,
+    Slide
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import CheckIcon from '@mui/icons-material/Check'
 import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import {useNavigate} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
@@ -35,8 +38,17 @@ export default function EmployeeList() {
     const [openDialog, setOpenDialog] = useState(false)
     const [selectedId, setSelectedId] = useState(null)
 
-    const [order, setOrder] = useState('asc'); // 昇順か降順か
-    const [orderBy, setOrderBy] = useState('name'); // どの列でソートするか
+    // 昇順か降順か
+    const [order, setOrder] = useState('asc');
+
+    // どの列でソートするか
+    const [orderBy, setOrderBy] = useState('name');
+
+    const Transition = forwardRef(function Transition(props, ref) {
+        return <Slide direction="up" ref={ref} {...props} />;
+    });
+
+
 
     useEffect(() => {
         fetchEmployees()
@@ -69,6 +81,7 @@ export default function EmployeeList() {
         handleCloseDialog()
     }
 
+    //ソート方向をトグル（昇順⇄降順）する
     const handleRequestSort = (property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -78,19 +91,58 @@ export default function EmployeeList() {
     const sortedRows = useMemo(() => {
         const sorted = [...filtered];
         sorted.sort((a, b) => {
+            const isAsc = order === 'asc' ? 1 : -1;
 
-            const nameOrder = order === 'asc' ? 1 : -1;
+            // 比較対象
             const aName = a.name || '';
             const bName = b.name || '';
-            if (aName < bName) return -1 * nameOrder;
-            if (aName > bName) return 1 * nameOrder;
+            const aDept = a.department?.name || '';
+            const bDept = b.department?.name || '';
+            const aRole = a.role?.name || '';
+            const bRole = b.role?.name || '';
+            const aPhone = a.phone || '';
+            const bPhone = b.phone || '';
 
-            // 第2ソート: 部署名
-            const deptCompare = (a.department?.name || '').localeCompare(b.department?.name || '');
-            if (deptCompare !== 0) return deptCompare;
+            let aValue = '';
+            let bValue = '';
 
-            return 0;
+            // 第1ソートキー
+            switch (orderBy) {
+                case 'department':
+                    aValue = aDept;
+                    bValue = bDept;
+                    break;
+                case 'role':
+                    aValue = aRole;
+                    bValue = bRole;
+                    break;
+                case 'phone':
+                    aValue = aPhone;
+                    bValue = bPhone;
+                    break;
+                case 'name':
+                default:
+                    aValue = aName;
+                    bValue = bName;
+                    break;
+            }
+
+            // 第1ソート
+            const primaryCompare = aValue.localeCompare(bValue);
+            if (primaryCompare !== 0) {
+                return primaryCompare * isAsc;
+            }
+
+            // 第2ソートの切り替え
+            if (orderBy === 'name') {
+                // 名前が同じなら部署順
+                return aDept.localeCompare(bDept) * isAsc;
+            } else {
+                // それ以外なら名前順
+                return aName.localeCompare(bName) * isAsc;
+            }
         });
+
         return sorted;
     }, [filtered, order, orderBy]);
 
@@ -114,9 +166,33 @@ export default function EmployeeList() {
                                 ユーザー名
                             </TableSortLabel>
                         </TableCell>
-                        <TableCell>電話番号</TableCell>
-                        <TableCell>部署</TableCell>
-                        <TableCell>権限</TableCell>
+                        <TableCell>
+                            <TableSortLabel
+                                active={orderBy === 'phone'}
+                                direction={orderBy === 'phone' ? order : 'asc'}
+                                onClick={() => handleRequestSort('phone')}
+                            >
+                                電話番号
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                            <TableSortLabel
+                                active={orderBy === 'department'}
+                                direction={orderBy === 'department' ? order : 'asc'}
+                                onClick={() => handleRequestSort('department')}
+                            >
+                                部署
+                            </TableSortLabel>
+                        </TableCell>
+                        <TableCell>
+                            <TableSortLabel
+                                active={orderBy === 'role'}
+                                direction={orderBy === 'role' ? order : 'asc'}
+                                onClick={() => handleRequestSort('role')}
+                            >
+                                権限
+                            </TableSortLabel>
+                        </TableCell>
                         <TableCell align="right">アクション</TableCell>
                     </TableRow>
                 </TableHead>
@@ -146,20 +222,30 @@ export default function EmployeeList() {
         </TableContainer>
 
 
+
         <Dialog
             open={openDialog}
             onClose={handleCloseDialog}
-            sx={{'& .MuiDialog-paper': {p: 2,},}}
+            sx={{'& .MuiDialog-paper': {p: 2}}}
+            TransitionComponent={Transition}
         >
-            <DialogTitle>
-                <Box display="flex" alignItems="center" gap={1}>
-                    <InfoOutlineIcon/>削除の確認
-                </Box>
-            </DialogTitle>
+            {/*<DialogTitle>*/}
+            {/*    <Box display="flex" alignItems="center" gap={1}>*/}
+            {/*        <InfoOutlineIcon/>削除の確認*/}
+            {/*    </Box>*/}
+            {/*</DialogTitle>*/}
+
+            {/*<DialogContent>*/}
+            {/*    <DialogContentText>*/}
+            {/*        本当にこのユーザーを削除してもよろしいですか？*/}
+            {/*    </DialogContentText>*/}
+            {/*</DialogContent>*/}
+
             <DialogContent>
-                <DialogContentText>
+                {/*<Alert icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="info"  >*/}
+                <Alert variant="outlined" severity="info">
                     本当にこのユーザーを削除してもよろしいですか？
-                </DialogContentText>
+                </Alert>
             </DialogContent>
             <DialogActions>
                 <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>
