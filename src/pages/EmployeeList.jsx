@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState,forwardRef} from 'react'
+import React, {useEffect, useMemo, useState, forwardRef} from 'react';
 import {
     Avatar,
     Box,
@@ -16,140 +16,141 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
-    DialogTitle,
     TableSortLabel,
     Alert,
     Slide
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import CheckIcon from '@mui/icons-material/Check'
-import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
-import {useNavigate} from 'react-router-dom'
-import useEmployeesListStore from '../store/useEmployeesListStore.js'
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {useNavigate} from 'react-router-dom';
+import useEmployeesListStore from '../store/useEmployeesListStore.js';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
- function EmployeeList() {
-    const navigate = useNavigate()
-    const {employees, fetchEmployees, deleteEmployee} = useEmployeesListStore()
-    const [q, setQ] = useState('')
+//
+// function compare(a, b) {
+//     if (a < b) return -1; // aが先
+//     if (a > b) return 1;  // bが先
+//     return 0;
+// }
 
-    const [openDialog, setOpenDialog] = useState(false)
-    const [selectedId, setSelectedId] = useState(null)
+//降順で比較する関数
+function descendingComparator(a, b, orderBy) {
+    const getValue = (obj) => {
+        switch (orderBy) {
+            case 'department':
+                return obj.department?.name || '';
+            case 'role':
+                return obj.role?.name || '';
+            case 'phone':
+                return obj.phone || '';
+            case 'name':
+            default:
+                return obj.name || '';
+        }
+    };
+    const aValue = getValue(a);
+    const bValue = getValue(b);
 
-    // 昇順か降順か
-    const [order, setOrder] = useState('asc');
+    if (bValue < aValue) return -1;
+    if (bValue > aValue) return 1;
+    return 0;
+}
 
-    // どの列でソートするか
-    const [orderBy, setOrderBy] = useState('name');
+//現在の order に応じて昇順／降順の関数を返す
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function EmployeeList() {
+    const navigate = useNavigate();
+    const {employees, fetchEmployees, deleteEmployee} = useEmployeesListStore();
+    const [q, setQ] = useState('');
+
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+
+    const [order, setOrder] = useState('asc'); // 昇順か降順か
+    const [orderBy, setOrderBy] = useState('name'); // どの列でソートするか
 
     useEffect(() => {
-        fetchEmployees()
-    }, [fetchEmployees])
+        fetchEmployees();
+    }, [fetchEmployees]);
 
     const filtered = useMemo(() => {
-        const term = q.trim().toLowerCase()
-        if (!term) return employees
+        const term = q.trim().toLowerCase();
+        if (!term) return employees;
         return employees.filter((e) => [e.name, e.phone, e.department?.name, e.role?.name]
             .filter(Boolean)
-            .some((v) => String(v).toLowerCase().includes(term)))
-    }, [employees, q])
+            .some((v) => String(v).toLowerCase().includes(term)));
+    }, [employees, q]);
 
-    // ダイアログを開く
     const handleOpenDialog = (id) => {
-        setSelectedId(id)
-        setOpenDialog(true)
-    }
+        setSelectedId(id);
+        setOpenDialog(true);
+    };
 
-    // ダイアログを閉じる
     const handleCloseDialog = () => {
-        setOpenDialog(false)
-        setSelectedId(null)
-    }
+        setOpenDialog(false);
+        setSelectedId(null);
+    };
 
     const handleDelete = () => {
         if (selectedId !== null) {
-            deleteEmployee(selectedId)
+            deleteEmployee(selectedId);
         }
-        handleCloseDialog()
-    }
+        handleCloseDialog();
+    };
 
-    //ソート方向をトグル（昇順⇄降順）する
-    const handleRequestSort = (property) => {
+    //クリックされた列が現在ソート中で昇順なら降順に切替
+    const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
 
+
+
+    //返された比較関数を使って実際に並べ替える
     const sortedRows = useMemo(() => {
-        const sorted = [...filtered];
-        sorted.sort((a, b) => {
-            const isAsc = order === 'asc' ? 1 : -1;
+        return [...filtered].sort((a, b) => {
+            const comparator = getComparator(order, orderBy);
+            const primaryCompare = comparator(a, b);
 
-            // 比較対象
-            const aName = a.name || '';
-            const bName = b.name || '';
-            const aDept = a.department?.name || '';
-            const bDept = b.department?.name || '';
-            const aRole = a.role?.name || '';
-            const bRole = b.role?.name || '';
-            const aPhone = a.phone || '';
-            const bPhone = b.phone || '';
+            if (primaryCompare !== 0) return primaryCompare;
 
-            let aValue = '';
-            let bValue = '';
-
-            // 第1ソートキー
-            switch (orderBy) {
-                case 'department':
-                    aValue = aDept;
-                    bValue = bDept;
-                    break;
-                case 'role':
-                    aValue = aRole;
-                    bValue = bRole;
-                    break;
-                case 'phone':
-                    aValue = aPhone;
-                    bValue = bPhone;
-                    break;
-                case 'name':
-                default:
-                    aValue = aName;
-                    bValue = bName;
-                    break;
-            }
-
-            // 第1ソート
-            const primaryCompare = aValue.localeCompare(bValue);
-            if (primaryCompare !== 0) {
-                return primaryCompare * isAsc;
-            }
-
-            // 第2ソートの切り替え
+            // 第2ソートは常に昇順
             if (orderBy === 'name') {
-                // 名前が同じなら部署順
-                return aDept.localeCompare(bDept) * isAsc;
+                const aDept = a.department?.name || '';
+                const bDept = b.department?.name || '';
+                return aDept.localeCompare(bDept);
             } else {
-                // それ以外なら名前順
-                return aName.localeCompare(bName) * isAsc;
+                const aName = a.name || '';
+                const bName = b.name || '';
+                return aName.localeCompare(bName);
             }
-        });
-
-        return sorted;
-    }, [filtered, order, orderBy]);
+        })
+    }, [filtered, order, orderBy])
 
     return (<Box>
         <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
             <Typography variant="h5">ユーザー一覧</Typography>
             <Button variant="contained" onClick={() => navigate('/new')}>ユーザーの作成</Button>
         </Box>
-        <TextField fullWidth size="small" placeholder="検索" value={q} onChange={(e) => setQ(e.target.value)}
-                   sx={{mb: 2}}/>
+
+        <TextField
+            fullWidth
+            size="small"
+            placeholder="検索"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            sx={{mb: 2}}
+        />
+
         <TableContainer component={Paper}>
             <Table>
                 <TableHead>
@@ -158,7 +159,7 @@ const Transition = forwardRef(function Transition(props, ref) {
                             <TableSortLabel
                                 active={orderBy === 'name'}
                                 direction={orderBy === 'name' ? order : 'asc'}
-                                onClick={() => handleRequestSort('name')}
+                                onClick={(e) => handleRequestSort(e, 'name')}
                             >
                                 ユーザー名
                             </TableSortLabel>
@@ -167,7 +168,7 @@ const Transition = forwardRef(function Transition(props, ref) {
                             <TableSortLabel
                                 active={orderBy === 'phone'}
                                 direction={orderBy === 'phone' ? order : 'asc'}
-                                onClick={() => handleRequestSort('phone')}
+                                onClick={(e) => handleRequestSort(e, 'phone')}
                             >
                                 電話番号
                             </TableSortLabel>
@@ -176,7 +177,7 @@ const Transition = forwardRef(function Transition(props, ref) {
                             <TableSortLabel
                                 active={orderBy === 'department'}
                                 direction={orderBy === 'department' ? order : 'asc'}
-                                onClick={() => handleRequestSort('department')}
+                                onClick={(e) => handleRequestSort(e, 'department')}
                             >
                                 部署
                             </TableSortLabel>
@@ -185,7 +186,7 @@ const Transition = forwardRef(function Transition(props, ref) {
                             <TableSortLabel
                                 active={orderBy === 'role'}
                                 direction={orderBy === 'role' ? order : 'asc'}
-                                onClick={() => handleRequestSort('role')}
+                                onClick={(e) => handleRequestSort(e, 'role')}
                             >
                                 権限
                             </TableSortLabel>
@@ -194,7 +195,6 @@ const Transition = forwardRef(function Transition(props, ref) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-
                     {sortedRows.map((e) => (<TableRow key={e.id} hover>
                         <TableCell>
                             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
@@ -218,8 +218,6 @@ const Transition = forwardRef(function Transition(props, ref) {
             </Table>
         </TableContainer>
 
-
-
         <Dialog
             open={openDialog}
             onClose={handleCloseDialog}
@@ -228,30 +226,19 @@ const Transition = forwardRef(function Transition(props, ref) {
                 transition: Transition,
             }}
         >
-            {/*<DialogTitle>*/}
-            {/*    <Box display="flex" alignItems="center" gap={1}>*/}
-            {/*        <InfoOutlineIcon/>削除の確認*/}
-            {/*    </Box>*/}
-            {/*</DialogTitle>*/}
-
-            {/*<DialogContent>*/}
-            {/*    <DialogContentText>*/}
-            {/*        本当にこのユーザーを削除してもよろしいですか？*/}
-            {/*    </DialogContentText>*/}
-            {/*</DialogContent>*/}
-
             <DialogContent>
-                {/*<Alert icon={<CheckIcon fontSize="inherit" />} variant="outlined" severity="info"  >*/}
                 <Alert variant="outlined" severity="info">
                     本当にこのユーザーを削除してもよろしいですか？
                 </Alert>
             </DialogContent>
             <DialogActions>
                 <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>
-                <Button color="error" variant="contained" onClick={handleDelete}
-                        startIcon={<DeleteIcon/>}>削除</Button>
+                <Button color="error" variant="contained" onClick={handleDelete} startIcon={<DeleteIcon/>}>
+                    削除
+                </Button>
             </DialogActions>
         </Dialog>
-    </Box>)
+    </Box>);
 }
+
 export default EmployeeList;

@@ -1,11 +1,25 @@
 {
   "employees": [
     {
-      "name": "spa2",
+      "name": "こばやし",
       "phone": "09029503410",
       "departmentId": 1,
       "roleId": 1,
       "id": 1
+    },
+    {
+      "name": "あゆ",
+      "phone": "09029503410",
+      "departmentId": 1,
+      "roleId": 1,
+      "id": 5
+    },
+    {
+      "name": "こばやし",
+      "phone": "09029503410",
+      "departmentId": 2,
+      "roleId": 1,
+      "id": 6
     }
   ],
   "roles": [

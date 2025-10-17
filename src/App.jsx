@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { createTheme, ThemeProvider, CssBaseline, Container, AppBar, Toolbar, Typography, Button } from '@mui/material'
-import {EmployeeList} from './pages/EmployeeList.jsx'
+import EmployeeList from './pages/EmployeeList'
 import EmployeeForm from './pages/EmployeeForm'
 import useEmployeesListStore from './store/useEmployeesListStore.js'
 
