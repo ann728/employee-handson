@@ -113,8 +113,6 @@ function EmployeeList() {
         setOrderBy(property);
     };
 
-
-
     //返された比較関数を使って実際に並べ替える
     const sortedRows = useMemo(() => {
         return [...filtered].sort((a, b) => {
