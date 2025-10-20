@@ -10,8 +10,9 @@ const useDepartmentsListStore = create((set, get) => ({
         try {
             set({loading: true, error: null});
             const departments = await masterService.departments();
-            const sorted = res.sort((a, b) => a.id - b.id);
-            set({departments: sorted});
+            const sorted = departments.sort((a, b) => a.id - b.id);
+            set({departments: sorted}
+            );
         } catch (e) {
             set({error: e.message});
         } finally {
