@@ -23,9 +23,11 @@ const useDepartmentsListStore = create((set, get) => ({
     async addDepartment(payload) {
         try {
             const department = await masterService.addDepartment(payload);
-            set({departments: department})
+            set((state) => ({
+                departments: [...state.departments, department]
+            }));
         } catch (e) {
-            set({error: e.message})
+            set({error: e.message});
         }
     }
 }))

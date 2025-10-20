@@ -129,7 +129,7 @@ function EmployeeList() {
             } else {
                 // その他列ソート時 → 第2: ユーザー名、第3: ID
                 const nameCompare = (a.name || '').localeCompare(b.name || '');
-                // if (nameCompare !== 0) return nameCompare;
+                if (nameCompare !== 0) return nameCompare;
                 // console.log("nameCompare:", a.name, b.name, nameCompare, a.id, b.id)
                 return a.id - b.id;
 
