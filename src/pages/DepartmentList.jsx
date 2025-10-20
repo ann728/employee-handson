@@ -17,21 +17,17 @@ import useDepartmentsListStore from '../store/useDepartmentsListStore.js';
 
 function DepartmentList() {
     const {departments, fetchDepartments} = useDepartmentsListStore();
+    //const [open, setOpen] = useState(false)
 
     useEffect(() => {
         fetchDepartments();
     }, []);
 
-    const sortedDepartments = useMemo(
-        () => [...departments].sort((a, b) => a.id - b.id),
-        [departments]
-    );
-
     return (
         <Box>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                 <Typography variant="h5">部署一覧</Typography>
-                <Button variant="contained">部署の追加</Button>
+                <Button variant="contained" >部署の追加</Button>
             </Box>
 
             <TableContainer component={Paper}>

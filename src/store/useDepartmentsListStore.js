@@ -18,6 +18,15 @@ const useDepartmentsListStore = create((set, get) => ({
         } finally {
             set({loading: false});
         }
+    },
+
+    async addDepartment(payload) {
+        try {
+            const department = await masterService.addDepartment(payload);
+            set({departments: department})
+        } catch (e) {
+            set({error: e.message})
+        }
     }
 }))
 export default useDepartmentsListStore;
