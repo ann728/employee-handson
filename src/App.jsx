@@ -62,7 +62,7 @@ export default function App() {
                             }}>ユーザー一覧</MenuItem>
                         <MenuItem
                             onClick={() => {
-                                navigate('/depertments')
+                                navigate('/departments')
                                 handleMenuClose()
                             }}>部署一覧</MenuItem>
                         <MenuItem
@@ -78,7 +78,7 @@ export default function App() {
             <Container sx={{mt: 3}}>
                 <Routes>
                     <Route path="/" element={<EmployeeList/>}/>
-                    <Route path="/depertments" element={<DepartmentList/>}/>
+                    <Route path="/departments" element={<DepartmentList/>}/>
                     <Route path="/new" element={<EmployeeForm/>}/>
                     <Route path="/edit/:id" element={<EmployeeForm/>}/>
                 </Routes>
