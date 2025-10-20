@@ -84,11 +84,11 @@ export default function EmployeeForm() {
     };
 
     return (<>
-        <Typography variant="h5">ユーザー設定</Typography>
-        <Box>
-            <Button variant="outlined" onClick={() => navigate('/')}>ユーザー一覧</Button>
-            <Button sx={{ml: 1}} type="submit" variant="contained">ユーザーの保存</Button>
-        </Box>
+        {/*<Typography variant="h5">ユーザー設定</Typography>*/}
+        {/*<Box>*/}
+        {/*    <Button variant="outlined" onClick={() => navigate('/')}>ユーザー一覧</Button>*/}
+        {/*    <Button sx={{ml: 1}} type="submit" variant="contained">ユーザーの保存</Button>*/}
+        {/*</Box>*/}
         <Paper sx={{p: 3}} component="form" onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                 <Typography variant="h5">ユーザー設定</Typography>
