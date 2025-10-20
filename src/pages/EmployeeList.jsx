@@ -24,10 +24,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useNavigate} from 'react-router-dom';
 import useEmployeesListStore from '../store/useEmployeesListStore.js';
+import DeleteDialog from './common/DeleteDialog';
 
-const Transition = forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+// const Transition = forwardRef(function Transition(props, ref) {
+//     return <Slide direction="up" ref={ref} {...props} />;
+// });
 
 //
 // function compare(a, b) {
@@ -222,26 +223,31 @@ function EmployeeList() {
                 </Table>
             </TableContainer>
 
-            <Dialog
+            {/*<Dialog*/}
+            {/*    open={openDialog}*/}
+            {/*    onClose={handleCloseDialog}*/}
+            {/*    sx={{'& .MuiDialog-paper': {p: 2}}}*/}
+            {/*    slots={{*/}
+            {/*        transition: Transition,*/}
+            {/*    }}*/}
+            {/*>*/}
+            {/*    <DialogContent>*/}
+            {/*        <Alert variant="outlined" severity="info">*/}
+            {/*            本当にこのユーザーを削除してもよろしいですか？*/}
+            {/*        </Alert>*/}
+            {/*    </DialogContent>*/}
+            {/*    <DialogActions>*/}
+            {/*        <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>*/}
+            {/*        <Button color="error" variant="contained" onClick={handleDelete} startIcon={<DeleteIcon/>}>*/}
+            {/*            削除*/}
+            {/*        </Button>*/}
+            {/*    </DialogActions>*/}
+            {/*</Dialog>*/}
+            <DeleteDialog
                 open={openDialog}
-                onClose={handleCloseDialog}
-                sx={{'& .MuiDialog-paper': {p: 2}}}
-                slots={{
-                    transition: Transition,
-                }}
-            >
-                <DialogContent>
-                    <Alert variant="outlined" severity="info">
-                        本当にこのユーザーを削除してもよろしいですか？
-                    </Alert>
-                </DialogContent>
-                <DialogActions>
-                    <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>
-                    <Button color="error" variant="contained" onClick={handleDelete} startIcon={<DeleteIcon/>}>
-                        削除
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                onClose={() => setOpenDialog(false)}
+                onDelete={handleDelete}
+            />
         </Box>);
 }
 

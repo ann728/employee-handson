@@ -29,6 +29,17 @@ const useDepartmentsListStore = create((set, get) => ({
         } catch (e) {
             set({error: e.message});
         }
+    },
+
+    async deleteDepartment(id) {
+        try {
+            await masterService.removeDepartment(id);
+            set((state) => ({
+                departments: state.departments.filter(dep => dep.id !== id)
+            }));
+        } catch (e) {
+            set({error: e.message});
+        }
     }
 }))
 export default useDepartmentsListStore;

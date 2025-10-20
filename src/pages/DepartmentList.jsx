@@ -19,25 +19,29 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useDepartmentsListStore from '../store/useDepartmentsListStore.js';
+import DeleteDialog from './common/DeleteDialog';
 
 function DepartmentList() {
-    const {departments, fetchDepartments, addDepartment} = useDepartmentsListStore();
-    const [open, setOpen] = useState(false)
-    const [name, setName] = useState('')
-    const [error, setError] = useState('')
+    const {departments, fetchDepartments, addDepartment,deleteDepartment} = useDepartmentsListStore();
+    const [openAddDialog, setOpenAddDialog] = useState(false);
+    const [name, setName] = useState('');
+    const [error, setError] = useState('');
+
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
         fetchDepartments();
     }, []);
 
-    const handleOpen = () => {
-        setOpen(true);
+    const handleOpenAddDialog = () => {
+        setOpenAddDialog(true);
         setName('')
         setError('')
     }
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleCloseAddDialog = () => {
+        setOpenAddDialog(false);
     }
 
     const handleSave = async () => {
@@ -46,13 +50,30 @@ function DepartmentList() {
             return
         }
         await addDepartment({name});
-        handleClose();
+        handleCloseAddDialog();
     }
+    const handleOpenDeleteDialog = (id) => {
+        setSelectedId(id);
+        setOpenDeleteDialog(true);
+    }
+
+    const handleCloseDeleteDialog = () => {
+        setOpenDeleteDialog(false);
+        setSelectedId(null);
+    }
+
+    const handleDelete = () => {
+        if (selectedId !== null) {
+            deleteDepartment(selectedId);
+        }
+        handleCloseDeleteDialog();
+    }
+
     return (
         <Box>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                 <Typography variant="h5">部署一覧</Typography>
-                <Button variant="contained" onClick={handleOpen}>部署の追加</Button>
+                <Button variant="contained" onClick={handleOpenAddDialog}>部署の追加</Button>
             </Box>
 
             <TableContainer component={Paper}>
@@ -71,7 +92,7 @@ function DepartmentList() {
                                 <TableRow key={department.id} hover>
                                     <TableCell>{department.name}</TableCell>
                                     <TableCell align="right">
-                                        <IconButton color="error">
+                                        <IconButton color="error"  onClick={() => handleOpenDeleteDialog(department.id)}>
                                             <DeleteIcon/>
                                         </IconButton>
                                     </TableCell>
@@ -82,7 +103,7 @@ function DepartmentList() {
                 </Table>
             </TableContainer>
 
-            <Dialog open={open} onClose={handleClose} sx={{'& .MuiDialog-paper': {p: 2}}}>
+            <Dialog open={openAddDialog} onClose={handleCloseAddDialog} sx={{'& .MuiDialog-paper': {p: 2}}}>
                 <DialogTitle>部署追加</DialogTitle>
                 <DialogContent>
                     <TextField
@@ -98,13 +119,19 @@ function DepartmentList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>キャンセル</Button>
+                    <Button onClick={handleCloseAddDialog}>キャンセル</Button>
                     <Button variant="contained" onClick={handleSave}>
                         保存
                     </Button>
                 </DialogActions>
             </Dialog>
 
+
+            <DeleteDialog
+                open={openDeleteDialog}
+                onClose={handleCloseDeleteDialog}
+                onDelete={handleDelete}
+            />
         </Box>
     );
 }

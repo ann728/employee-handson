@@ -37,5 +37,8 @@ export const masterService = {
     async addDepartment(payload) {
         const res = await api.post('/departments', payload)
         return res.data
+    },
+    async removeDepartment(id) {
+        await api.delete(`/departments/${id}`);
     }
 }
