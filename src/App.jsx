@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import EmployeeList from './pages/EmployeeList'
 import EmployeeForm from './pages/EmployeeForm'
+import DepartmentList from "./pages/DepartmentList";
 import useEmployeesListStore from './store/useEmployeesListStore.js'
 
 const theme = createTheme({});
@@ -61,6 +62,11 @@ export default function App() {
                             }}>ユーザー一覧</MenuItem>
                         <MenuItem
                             onClick={() => {
+                                navigate('/depertments')
+                                handleMenuClose()
+                            }}>部署一覧</MenuItem>
+                        <MenuItem
+                            onClick={() => {
                                 navigate('/new')
                                 handleMenuClose()
                             }}>ユーザーの作成</MenuItem>
@@ -72,6 +78,7 @@ export default function App() {
             <Container sx={{mt: 3}}>
                 <Routes>
                     <Route path="/" element={<EmployeeList/>}/>
+                    <Route path="/depertments" element={<DepartmentList/>}/>
                     <Route path="/new" element={<EmployeeForm/>}/>
                     <Route path="/edit/:id" element={<EmployeeForm/>}/>
                 </Routes>

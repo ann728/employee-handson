@@ -138,109 +138,111 @@ function EmployeeList() {
 
     }, [filtered, order, orderBy])
 
-    return (<Box>
-        <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-            <Typography variant="h5">ユーザー一覧</Typography>
-            <Button variant="contained" onClick={() => navigate('/new')}>ユーザーの作成</Button>
-        </Box>
+    return (
+        <Box>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
+                <Typography variant="h5">ユーザー一覧</Typography>
+                <Button variant="contained" onClick={() => navigate('/new')}>ユーザーの作成</Button>
+            </Box>
 
-        <TextField
-            fullWidth
-            size="small"
-            placeholder="検索"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            sx={{mb: 2}}
-        />
+            <TextField
+                fullWidth
+                size="small"
+                placeholder="検索"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                sx={{mb: 2}}
+            />
 
-        <TableContainer component={Paper}>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>
-                            <TableSortLabel
-                                active={orderBy === 'name'}
-                                direction={orderBy === 'name' ? order : 'asc'}
-                                onClick={(e) => handleRequestSort(e, 'name')}
-                            >
-                                ユーザー名
-                            </TableSortLabel>
-                        </TableCell>
-                        <TableCell>
-                            <TableSortLabel
-                                active={orderBy === 'phone'}
-                                direction={orderBy === 'phone' ? order : 'asc'}
-                                onClick={(e) => handleRequestSort(e, 'phone')}
-                            >
-                                電話番号
-                            </TableSortLabel>
-                        </TableCell>
-                        <TableCell>
-                            <TableSortLabel
-                                active={orderBy === 'department'}
-                                direction={orderBy === 'department' ? order : 'asc'}
-                                onClick={(e) => handleRequestSort(e, 'department')}
-                            >
-                                部署
-                            </TableSortLabel>
-                        </TableCell>
-                        <TableCell>
-                            <TableSortLabel
-                                active={orderBy === 'role'}
-                                direction={orderBy === 'role' ? order : 'asc'}
-                                onClick={(e) => handleRequestSort(e, 'role')}
-                            >
-                                権限
-                            </TableSortLabel>
-                        </TableCell>
-                        <TableCell align="right">アクション</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {sortedRows.map((e) => (<TableRow key={e.id} hover>
-                        <TableCell>
-                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                                <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
-                                {e.name}
-                            </Box>
-                        </TableCell>
-                        <TableCell>{e.phone}</TableCell>
-                        <TableCell>{e.department?.name}</TableCell>
-                        <TableCell>{e.role?.name}</TableCell>
-                        <TableCell align="right">
-                            <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
-                                <EditIcon/>
-                            </IconButton>
-                            <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
-                                <DeleteIcon/>
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === 'name'}
+                                    direction={orderBy === 'name' ? order : 'asc'}
+                                    onClick={(e) => handleRequestSort(e, 'name')}
+                                >
+                                    ユーザー名
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === 'phone'}
+                                    direction={orderBy === 'phone' ? order : 'asc'}
+                                    onClick={(e) => handleRequestSort(e, 'phone')}
+                                >
+                                    電話番号
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === 'department'}
+                                    direction={orderBy === 'department' ? order : 'asc'}
+                                    onClick={(e) => handleRequestSort(e, 'department')}
+                                >
+                                    部署
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === 'role'}
+                                    direction={orderBy === 'role' ? order : 'asc'}
+                                    onClick={(e) => handleRequestSort(e, 'role')}
+                                >
+                                    権限
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell align="right">アクション</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {sortedRows.map((e) => (
+                            <TableRow key={e.id} hover>
+                                <TableCell>
+                                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                        <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
+                                        {e.name}
+                                    </Box>
+                                </TableCell>
+                                <TableCell>{e.phone}</TableCell>
+                                <TableCell>{e.department?.name}</TableCell>
+                                <TableCell>{e.role?.name}</TableCell>
+                                <TableCell align="right">
+                                    <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
+                                        <EditIcon/>
+                                    </IconButton>
+                                    <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
-        <Dialog
-            open={openDialog}
-            onClose={handleCloseDialog}
-            sx={{'& .MuiDialog-paper': {p: 2}}}
-            slots={{
-                transition: Transition,
-            }}
-        >
-            <DialogContent>
-                <Alert variant="outlined" severity="info">
-                    本当にこのユーザーを削除してもよろしいですか？
-                </Alert>
-            </DialogContent>
-            <DialogActions>
-                <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>
-                <Button color="error" variant="contained" onClick={handleDelete} startIcon={<DeleteIcon/>}>
-                    削除
-                </Button>
-            </DialogActions>
-        </Dialog>
-    </Box>);
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                sx={{'& .MuiDialog-paper': {p: 2}}}
+                slots={{
+                    transition: Transition,
+                }}
+            >
+                <DialogContent>
+                    <Alert variant="outlined" severity="info">
+                        本当にこのユーザーを削除してもよろしいですか？
+                    </Alert>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>
+                    <Button color="error" variant="contained" onClick={handleDelete} startIcon={<DeleteIcon/>}>
+                        削除
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Box>);
 }
 
 export default EmployeeList;
