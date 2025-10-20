@@ -82,11 +82,12 @@ function DepartmentList() {
                 </Table>
             </TableContainer>
 
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} sx={{'& .MuiDialog-paper': {p: 2}}}>
                 <DialogTitle>部署追加</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
+                        margin="dense"
                         label="部署名"
                         value={name}
                         error={!!error}
