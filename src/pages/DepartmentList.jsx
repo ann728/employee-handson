@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect,useMemo} from 'react'
 import {
     Box,
     Typography,
@@ -21,6 +21,11 @@ function DepartmentList() {
     useEffect(() => {
         fetchDepartments();
     }, []);
+
+    const sortedDepartments = useMemo(
+        () => [...departments].sort((a, b) => a.id - b.id),
+        [departments]
+    );
 
     return (
         <Box>
