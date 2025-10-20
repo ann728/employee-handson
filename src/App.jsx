@@ -1,6 +1,17 @@
-import React, {useEffect,useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Routes, Route, useNavigate} from 'react-router-dom'
-import {createTheme, ThemeProvider, CssBaseline, Container, AppBar, Toolbar, Typography, Button,Menu,MenuItem} from '@mui/material'
+import {
+    createTheme,
+    ThemeProvider,
+    CssBaseline,
+    Container,
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Menu,
+    MenuItem
+} from '@mui/material'
 import EmployeeList from './pages/EmployeeList'
 import EmployeeForm from './pages/EmployeeForm'
 import useEmployeesListStore from './store/useEmployeesListStore.js'
@@ -20,7 +31,8 @@ export default function App() {
         fetchMasters();
     }, [fetchMasters]);
 
-    return (<ThemeProvider theme={theme}>
+    return (
+        <ThemeProvider theme={theme}>
             <CssBaseline/>
             <AppBar position="static" color="default" elevation={0}>
                 <Toolbar>
