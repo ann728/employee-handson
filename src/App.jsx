@@ -15,13 +15,14 @@ import {
 import EmployeeList from './pages/EmployeeList'
 import EmployeeForm from './pages/EmployeeForm'
 import DepartmentList from "./pages/DepartmentList";
+import Login from "./pages/Login";
 import useEmployeesListStore from './store/useEmployeesListStore.js'
-import { useTranslation } from 'react-i18next'
+import {useTranslation} from 'react-i18next'
 
 const theme = createTheme({});
 
 export default function App() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const navigate = useNavigate();
     const fetchMasters = useEmployeesListStore((s) => s.fetchMasters);
@@ -88,6 +89,7 @@ export default function App() {
             <Container sx={{mt: 3}}>
                 <Routes>
                     <Route path="/" element={<EmployeeList/>}/>
+                    <Route path="/login" element={<Login/>}/>
                     <Route path="/departments" element={<DepartmentList/>}/>
                     <Route path="/new" element={<EmployeeForm/>}/>
                     <Route path="/edit/:id" element={<EmployeeForm/>}/>

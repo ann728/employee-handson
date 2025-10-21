@@ -23,6 +23,11 @@ export const employeeService = {
     async remove(id) {
         await api.delete(`/employees/${id}`)
     },
+    async login(email, password) {
+        const res = await api.get(`/employees?email=${email}&password=${password}&_expand=department&_expand=role`)
+        // 該当するユーザーがいれば配列の最初の要素を返す
+        return res.data.length > 0 ? res.data[0] : null
+    },
 }
 
 export const masterService = {
@@ -42,3 +47,5 @@ export const masterService = {
         await api.delete(`/departments/${id}`);
     }
 }
+
+
