@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import useDepartmentsListStore from '../store/useDepartmentsListStore.js';
-import DeleteDialog from './common/DeleteDialog';
+import DeleteDialog from '../components/dialogs/DeleteDialog';
 
 function DepartmentList() {
     const {departments, fetchDepartments, addDepartment,deleteDepartment} = useDepartmentsListStore();

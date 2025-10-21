@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import {employeeService} from '../services/employeeService'
+import {employeeService} from '../services/api.js'
 
 //詳細画面専用のストア
 const useEmployeeDetailStore = create((set, get) => ({

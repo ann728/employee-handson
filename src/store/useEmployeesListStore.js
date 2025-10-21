@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import {employeeService,masterService} from '../services/employeeService'
+import {employeeService,masterService} from '../services/api.js'
 
 const useEmployeesListStore = create((set, get) => ({
     employees: [],

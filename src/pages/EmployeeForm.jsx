@@ -2,7 +2,6 @@ import React, {useEffect, useMemo, useState, useCallback} from 'react'
 import {Box, Button, Grid, MenuItem, Paper, TextField, Typography} from '@mui/material'
 import {useNavigate, useParams} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
-import {employeeService} from '../services/employeeService.js'
 import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
 import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from "@hookform/resolvers/zod";

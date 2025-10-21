@@ -24,7 +24,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useNavigate} from 'react-router-dom';
 import useEmployeesListStore from '../store/useEmployeesListStore.js';
-import DeleteDialog from './common/DeleteDialog';
+import DeleteDialog from '../components/dialogs/DeleteDialog';
 
 // const Transition = forwardRef(function Transition(props, ref) {
 //     return <Slide direction="up" ref={ref} {...props} />;

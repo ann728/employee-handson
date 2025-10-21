@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {masterService} from '../services/employeeService'
+import {masterService} from '../services/api.js'
 
 const useDepartmentsListStore = create((set, get) => ({
     departments: [],
