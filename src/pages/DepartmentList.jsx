@@ -20,8 +20,10 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import useDepartmentsListStore from '../store/useDepartmentsListStore.js';
 import DeleteDialog from '../components/dialogs/DeleteDialog';
+import { useTranslation } from 'react-i18next';
 
 function DepartmentList() {
+    const { t } = useTranslation();
     const {departments, fetchDepartments, addDepartment,deleteDepartment} = useDepartmentsListStore();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [name, setName] = useState('');
@@ -46,7 +48,7 @@ function DepartmentList() {
 
     const handleSave = async () => {
         if (!name.trim()) {
-            setError('部署名を入力してください')
+            setError(t('departmentList.errorName'))
             return
         }
         await addDepartment({name});
@@ -72,8 +74,10 @@ function DepartmentList() {
     return (
         <Box>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                <Typography variant="h5">部署一覧</Typography>
-                <Button variant="contained" onClick={handleOpenAddDialog}>部署の追加</Button>
+                <Typography variant="h5">{t('departmentList.title')}</Typography>
+                <Button variant="contained" onClick={handleOpenAddDialog}>
+                    {t('departmentList.addButton')}
+                </Button>
             </Box>
 
             <TableContainer component={Paper}>
@@ -81,9 +85,9 @@ function DepartmentList() {
                     <TableHead>
                         <TableRow>
                             <TableCell>
-                                部署名
+                                {t('departmentList.tableHeader.name')}
                             </TableCell>
-                            <TableCell align="right">アクション</TableCell>
+                            <TableCell align="right">{t('departmentList.tableHeader.action')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -104,12 +108,12 @@ function DepartmentList() {
             </TableContainer>
 
             <Dialog open={openAddDialog} onClose={handleCloseAddDialog} sx={{'& .MuiDialog-paper': {p: 2}}}>
-                <DialogTitle>部署追加</DialogTitle>
+                <DialogTitle>{t('departmentList.dialogTitle')}</DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
                         margin="dense"
-                        label="部署名"
+                        label={t('departmentList.labelName')}
                         value={name}
                         error={!!error}
                         helperText={error || ''}
@@ -119,9 +123,9 @@ function DepartmentList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseAddDialog}>キャンセル</Button>
+                    <Button onClick={handleCloseAddDialog}>{t('departmentList.cancel')}</Button>
                     <Button variant="contained" onClick={handleSave}>
-                        保存
+                        {t('departmentList.save')}
                     </Button>
                 </DialogActions>
             </Dialog>

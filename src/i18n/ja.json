@@ -1,0 +1,63 @@
+{
+  "deleteDialog": {
+    "message": "本当に削除してもよろしいですか？",
+    "cancel": "キャンセル",
+    "delete": "削除"
+  },
+  "departmentList": {
+    "title": "部署一覧",
+    "addButton": "部署の追加",
+    "dialogTitle": "部署追加",
+    "labelName": "部署名",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "tableHeader": {
+      "name": "部署名",
+      "action": "アクション"
+    },
+    "errorName": "部署名を入力してください"
+  },
+  "employeeForm": {
+    "title": "ユーザー設定",
+    "buttons": {
+      "back": "ユーザー一覧",
+      "save": "ユーザーの保存"
+    },
+    "labels": {
+      "name": "ユーザー名",
+      "phone": "電話番号",
+      "department": "所属",
+      "role": "権限"
+    },
+    "placeholders": {
+      "select": "選択してください"
+    },
+    "errors": {
+      "name": "名前は必須です",
+      "phone": {
+        "required": "電話番号は必須です",
+        "format": "電話番号の形式で入力してください"
+      },
+      "department": "所属は必須です",
+      "role": "権限は必須です"
+    }
+  },
+  "employeeList": {
+    "title": "ユーザー一覧",
+    "create": "ユーザーの作成",
+    "placeholder": {
+      "search": "検索"
+    },
+    "name": "ユーザー名",
+    "phone": "電話番号",
+    "department": "部署",
+    "role": "権限",
+    "actions": "アクション"
+  },
+  "app": {
+    "title": "社員名簿",
+    "menu": {
+      "dashboard": "ダッシュボード"
+    }
+  }
+}

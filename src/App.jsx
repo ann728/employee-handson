@@ -16,10 +16,13 @@ import EmployeeList from './pages/EmployeeList'
 import EmployeeForm from './pages/EmployeeForm'
 import DepartmentList from "./pages/DepartmentList";
 import useEmployeesListStore from './store/useEmployeesListStore.js'
+import { useTranslation } from 'react-i18next'
 
 const theme = createTheme({});
 
 export default function App() {
+    const { t } = useTranslation();
+
     const navigate = useNavigate();
     const fetchMasters = useEmployeesListStore((s) => s.fetchMasters);
 
@@ -38,7 +41,7 @@ export default function App() {
             <AppBar position="static" color="default" elevation={0}>
                 <Toolbar>
                     <Typography variant="h6" sx={{flexGrow: 1}}>
-                        社員名簿
+                        {t('app.title')}
                     </Typography>
                     <Button id="basic-button"
                             aria-controls={open ? 'basic-menu' : undefined}
@@ -47,7 +50,7 @@ export default function App() {
                             onClick={handleClick}
                             variant="contained"
                     >
-                        ダッシュボード
+                        {t('app.menu.dashboard')}
                     </Button>
                     <Menu
                         id="basic-menu"
@@ -59,17 +62,24 @@ export default function App() {
                             onClick={() => {
                                 navigate('/')
                                 handleMenuClose()
-                            }}>ユーザー一覧</MenuItem>
+                            }}>
+                            {t('employeeList.title')}
+                        </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 navigate('/departments')
                                 handleMenuClose()
-                            }}>部署一覧</MenuItem>
+                            }}>
+                            {t('departmentList.title')}
+                        </MenuItem>
                         <MenuItem
                             onClick={() => {
                                 navigate('/new')
                                 handleMenuClose()
-                            }}>ユーザーの作成</MenuItem>
+                            }}>
+                            {t('employeeList.create')}
+
+                        </MenuItem>
                     </Menu>
                     {/*<Button variant="contained" onClick={() => navigate('/')}>ユーザー一覧</Button>*/}
                     {/*<Button sx={{ ml: 1 }} variant="outlined" onClick={() => navigate('/new')}>ユーザーの作成</Button>*/}

@@ -6,26 +6,34 @@ import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
 import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from 'zod';
+import {useTranslation} from 'react-i18next';
 
 
 const initial = {id: undefined, name: '', phone: '', departmentId: '', roleId: ''}
 
-export const employeeSchema = z.object({
-    name: z.string().min(1, "名前は必須です"),
-    phone: z
-        .string()
-        .min(1, "電話番号は必須です")
-        .regex(/^0\d{9,10}$/, "電話番号の形式で入力してください"),
-    departmentId: z.string().min(1, "所属は必須です"),
-    roleId: z.string().min(1, "権限は必須です"),
-})
+export function useEmployeeSchema() {
+    const {t} = useTranslation();
+
+    return z.object({
+        name: z.string().min(1, t('employeeForm.errors.name')),
+        phone: z
+            .string()
+            .min(1, t('employeeForm.errors.phone.required'))
+            .regex(/^0\d{9,10}$/, t('employeeForm.errors.phone.format')),
+        departmentId: z.string().min(1, t('employeeForm.errors.department')),
+        roleId: z.string().min(1, t('employeeForm.errors.role')),
+    });
+}
 
 
 export default function EmployeeForm() {
 
+    const {t} = useTranslation();
     const navigate = useNavigate()
     const {id} = useParams()
-    const {roles, departments, fetchMasters} = useEmployeesListStore()
+    const {roles, departments, fetchMasters} = useEmployeesListStore();
+
+    const employeeSchema = useEmployeeSchema();
 
     // useEmployeeDetailStore から詳細データを取得
     const {
@@ -86,10 +94,10 @@ export default function EmployeeForm() {
         <>
             <Paper sx={{p: 3}} component="form" onSubmit={handleSubmit(onSubmit)}>
                 <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                    <Typography variant="h5">ユーザー設定</Typography>
+                    <Typography variant="h5">{t('employeeForm.title')}</Typography>
                     <Box>
-                        <Button variant="outlined" onClick={() => navigate('/')}>ユーザー一覧</Button>
-                        <Button sx={{ml: 1}} type="submit" variant="contained">ユーザーの保存</Button>
+                        <Button variant="outlined" onClick={() => navigate('/')}>{t('employeeForm.buttons.back')}</Button>
+                        <Button sx={{ml: 1}} type="submit" variant="contained">{t('employeeForm.buttons.save')}</Button>
                     </Box>
                 </Box>
                 <Grid container spacing={2}>
@@ -100,13 +108,13 @@ export default function EmployeeForm() {
                             control={control}
                             render={({field}) => (
                                 <TextField
-                                {...field}
-                                fullWidth
-                                label="ユーザー名"
-                                // required
-                                error={!!errors.name}
-                                helperText={errors.name?.message}
-                            />)}
+                                    {...field}
+                                    fullWidth
+                                    label={t('employeeForm.labels.name')}
+                                    // required
+                                    error={!!errors.name}
+                                    helperText={errors.name?.message}
+                                />)}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -116,7 +124,8 @@ export default function EmployeeForm() {
                             render={({field}) => (<TextField
                                 {...field}
                                 fullWidth
-                                label="電話番号"
+                                label={t('employeeForm.labels.phone')}
+
                                 // required
                                 error={!!errors.phone}
                                 helperText={errors.phone?.message}
@@ -135,13 +144,13 @@ export default function EmployeeForm() {
                                 {...field}
                                 select
                                 fullWidth
-                                label="所属"
+                                label={t('employeeForm.labels.department')}
                                 // required
                                 error={!!errors.departmentId}
                                 helperText={errors.departmentId?.message}
                             >
                                 <MenuItem value="">
-                                    <em>選択してください</em>
+                                    <em>{t('employeeForm.placeholders.select')}</em>
                                 </MenuItem>
                                 {departments.map((d) => (
                                     <MenuItem key={d.id} value={d.id.toString()}>{d.name}</MenuItem>))}
@@ -156,13 +165,13 @@ export default function EmployeeForm() {
                                 {...field}
                                 select
                                 fullWidth
-                                label="権限"
+                                label={t('employeeForm.labels.role')}
                                 // required
                                 error={!!errors.roleId}
                                 helperText={errors.roleId?.message}
                             >
                                 <MenuItem value="">
-                                    <em>選択してください</em>
+                                    <em>{t('employeeForm.placeholders.select')}</em>
                                 </MenuItem>
                                 {roles.map((r) => (
                                     <MenuItem key={r.id} value={r.id.toString()}>{r.name}</MenuItem>))}

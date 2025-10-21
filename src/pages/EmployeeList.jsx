@@ -25,6 +25,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {useNavigate} from 'react-router-dom';
 import useEmployeesListStore from '../store/useEmployeesListStore.js';
 import DeleteDialog from '../components/dialogs/DeleteDialog';
+import {useTranslation} from 'react-i18next';
 
 // const Transition = forwardRef(function Transition(props, ref) {
 //     return <Slide direction="up" ref={ref} {...props} />;
@@ -68,6 +69,7 @@ function getComparator(order, orderBy) {
 }
 
 function EmployeeList() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const {employees, fetchEmployees, deleteEmployee} = useEmployeesListStore();
     const [q, setQ] = useState('');
@@ -142,14 +144,16 @@ function EmployeeList() {
     return (
         <Box>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                <Typography variant="h5">ユーザー一覧</Typography>
-                <Button variant="contained" onClick={() => navigate('/new')}>ユーザーの作成</Button>
+                <Typography variant="h5">{t('employeeList.title')}</Typography>
+                <Button variant="contained" onClick={() => navigate('/new')}>
+                    {t('employeeList.create')}
+                </Button>
             </Box>
 
             <TextField
                 fullWidth
                 size="small"
-                placeholder="検索"
+                placeholder={t('employeeList.placeholder.search')}s
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 sx={{mb: 2}}
@@ -165,7 +169,7 @@ function EmployeeList() {
                                     direction={orderBy === 'name' ? order : 'asc'}
                                     onClick={(e) => handleRequestSort(e, 'name')}
                                 >
-                                    ユーザー名
+                                    {t('employeeList.name')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -174,7 +178,7 @@ function EmployeeList() {
                                     direction={orderBy === 'phone' ? order : 'asc'}
                                     onClick={(e) => handleRequestSort(e, 'phone')}
                                 >
-                                    電話番号
+                                    {t('employeeList.phone')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -183,7 +187,7 @@ function EmployeeList() {
                                     direction={orderBy === 'department' ? order : 'asc'}
                                     onClick={(e) => handleRequestSort(e, 'department')}
                                 >
-                                    部署
+                                    {t('employeeList.department')}
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>
@@ -192,10 +196,12 @@ function EmployeeList() {
                                     direction={orderBy === 'role' ? order : 'asc'}
                                     onClick={(e) => handleRequestSort(e, 'role')}
                                 >
-                                    権限
+                                    {t('employeeList.role')}
                                 </TableSortLabel>
                             </TableCell>
-                            <TableCell align="right">アクション</TableCell>
+                            <TableCell align="right">
+                                {t('employeeList.actions')}
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
