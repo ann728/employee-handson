@@ -10,7 +10,10 @@ import {
     Typography,
     Button,
     Menu,
-    MenuItem
+    MenuItem,
+    Box,
+    Snackbar,
+    Alert
 } from '@mui/material'
 import EmployeeList from './pages/EmployeeList'
 import EmployeeForm from './pages/EmployeeForm'
@@ -33,6 +36,7 @@ export default function App() {
     const open = Boolean(anchorEl);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     useEffect(() => {
         fetchMasters();
@@ -46,55 +50,59 @@ export default function App() {
                     <Typography variant="h6" sx={{flexGrow: 1}}>
                         {t('app.title')}
                     </Typography>
-                    <Button id="basic-button"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
-                            variant="contained"
-                    >
-                        {t('app.menu.dashboard')}
-                    </Button>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleMenuClose}
-                    >
-                        <MenuItem
-                            onClick={() => {
-                                navigate('/')
-                                handleMenuClose()
-                            }}>
-                            {t('employeeList.title')}
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                navigate('/departments')
-                                handleMenuClose()
-                            }}>
-                            {t('departmentList.title')}
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                navigate('/new')
-                                handleMenuClose()
-                            }}>
-                            {t('employeeList.create')}
 
-                        </MenuItem>
-                    </Menu>
-                    {isLoggedIn && (
-                        <Button
-                            variant="contained"
-                            onClick={() => {
-                                logout();
-                                navigate('/');
-                            }}
+                    <Box sx={{display: 'flex', gap: 2}}>
+                        <Button id="basic-button"
+                                aria-controls={open ? 'basic-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}
+                                variant="contained"
                         >
-                            ログアウト
+                            {t('app.menu.dashboard')}
                         </Button>
-                    )}
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem
+                                onClick={() => {
+                                    navigate('/')
+                                    handleMenuClose()
+                                }}>
+                                {t('employeeList.title')}
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    navigate('/departments')
+                                    handleMenuClose()
+                                }}>
+                                {t('departmentList.title')}
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    navigate('/new')
+                                    handleMenuClose()
+                                }}>
+                                {t('employeeList.create')}
+
+                            </MenuItem>
+                        </Menu>
+                        {isLoggedIn && (
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    logout();
+                                    navigate('/');
+                                    setSnackbarOpen(true);
+                                }}
+                            >
+                                ログアウト
+                            </Button>
+                        )}
+                    </Box>
                     {/*<Button variant="contained" onClick={() => navigate('/')}>ユーザー一覧</Button>*/}
                     {/*<Button sx={{ ml: 1 }} variant="outlined" onClick={() => navigate('/new')}>ユーザーの作成</Button>*/}
                 </Toolbar>
@@ -108,5 +116,16 @@ export default function App() {
                     <Route path="/edit/:id" element={<EmployeeForm/>}/>
                 </Routes>
             </Container>
+
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={2000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+                    ログアウトしました
+                </Alert>
+            </Snackbar>
         </ThemeProvider>)
 }

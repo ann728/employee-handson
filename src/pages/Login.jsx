@@ -3,6 +3,21 @@ import {useNavigate} from 'react-router-dom'
 import {Box, Button, Container, TextField, Typography, Paper, Alert, Snackbar} from '@mui/material';
 import {useForm} from 'react-hook-form'
 import useAuthStore from '../store/useAuthStore'
+import { employeeService } from '../services/api';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+
+export const loginSchema = z.object({
+    email: z.string()
+        .email('正しいメールアドレスを入力してください'),
+        // .refine(async (email) => {
+        //     const res = await employeeService.list();
+        //     return res.some(user => user.email === email);
+        // }, { message: '存在しないメールアドレスです' }),
+    password: z.string().min(1, 'パスワードは必須です'),
+});
+
 
 const Login = () => {
     const navigate = useNavigate();
@@ -20,13 +35,14 @@ const Login = () => {
             email: '',
             password: '',
         },
+        resolver: zodResolver(loginSchema),
     })
 
     const onSubmit = async (data) => {
         const success = await login(data.email, data.password);
         if (!success) return;
         setOpen(true);
-        // navigate('/employees');
+        //navigate('/employees');
 
     };
 
@@ -100,11 +116,11 @@ const Login = () => {
 
                     <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
                         <Alert
-                            onClose={handleClose}
+                            onClose={() => setOpen(false)}
                             severity="success"
                             variant="filled"
                         >
-                            Snackbar + Alert !!
+                            ログインが完了しました
                         </Alert>
                     </Snackbar>
 
