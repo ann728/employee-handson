@@ -3,6 +3,7 @@ import {Box, Button, Grid, MenuItem, Paper, TextField, Typography} from '@mui/ma
 import {useNavigate, useParams} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
 import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
+import useAuthStore from '../store/useAuthStore.js'
 import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from 'zod';
@@ -32,6 +33,7 @@ export default function EmployeeForm() {
     const navigate = useNavigate()
     const {id} = useParams()
     const {roles, departments, fetchMasters} = useEmployeesListStore();
+    const {isLoggedIn} = useAuthStore();
 
     const employeeSchema = useEmployeeSchema();
 
@@ -69,6 +71,13 @@ export default function EmployeeForm() {
         load()
     }, [id, fetchEmployeeById, reset])
 
+    //ログインしていない場合ログイン画面へリダイレクト
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/');
+        }
+    }, [isLoggedIn, navigate]);
+
     useEffect(() => {
         if (!roles.length || !departments.length) {
             fetchMasters()
@@ -96,7 +105,8 @@ export default function EmployeeForm() {
                 <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                     <Typography variant="h5">{t('employeeForm.title')}</Typography>
                     <Box>
-                        <Button variant="outlined" onClick={() => navigate('/')}>{t('employeeForm.buttons.back')}</Button>
+                        <Button variant="outlined"
+                                onClick={() => navigate('/')}>{t('employeeForm.buttons.back')}</Button>
                         <Button sx={{ml: 1}} type="submit" variant="contained">{t('employeeForm.buttons.save')}</Button>
                     </Box>
                 </Box>

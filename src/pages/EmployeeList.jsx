@@ -24,6 +24,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useNavigate} from 'react-router-dom';
 import useEmployeesListStore from '../store/useEmployeesListStore.js';
+import useAuthStore from '../store/useAuthStore.js'
 import DeleteDialog from '../components/dialogs/DeleteDialog';
 import {useTranslation} from 'react-i18next';
 
@@ -69,9 +70,10 @@ function getComparator(order, orderBy) {
 }
 
 function EmployeeList() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const navigate = useNavigate();
     const {employees, fetchEmployees, deleteEmployee} = useEmployeesListStore();
+    const {isLoggedIn} = useAuthStore();
     const [q, setQ] = useState('');
 
     const [openDialog, setOpenDialog] = useState(false);
@@ -79,6 +81,13 @@ function EmployeeList() {
 
     const [order, setOrder] = useState('asc'); // 昇順か降順か
     const [orderBy, setOrderBy] = useState('name'); // どの列でソートするか
+
+    //ログインしていない場合ログイン画面へリダイレクト
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/');
+        }
+    }, [isLoggedIn, navigate]);
 
     useEffect(() => {
         fetchEmployees();
@@ -153,7 +162,7 @@ function EmployeeList() {
             <TextField
                 fullWidth
                 size="small"
-                placeholder={t('employeeList.placeholder.search')}s
+                placeholder={t('employeeList.placeholder.search')} s
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 sx={{mb: 2}}

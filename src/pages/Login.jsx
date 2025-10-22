@@ -1,24 +1,47 @@
-import React, {useState} from 'react';
-import {Box, Button, Container, TextField, Typography, Paper} from '@mui/material';
+import React, {useState,useEffect} from 'react';
+import {useNavigate} from 'react-router-dom'
+import {Box, Button, Container, TextField, Typography, Paper,Alert} from '@mui/material';
+import {useForm} from 'react-hook-form'
+import useAuthStore from '../store/useAuthStore'
 
 const Login = () => {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { login, error, loading, isLoggedIn } = useAuthStore();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const {
+        register,
+        handleSubmit,
+        formState: {errors},
+    } = useForm({
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    })
+
+    const onSubmit = async (data) => {
+        const success = await login(data.email, data.password);
+        if (!success) return;
+        navigate('/employees')
     }
+
+    useEffect(() => {
+        console.log("isLoggedIn:", isLoggedIn)
+        if (isLoggedIn) {
+            navigate('/employees')
+        }
+    }, [isLoggedIn, navigate]);
+
     return (
         <Container maxWidth="sm">
-            <Paper  elevation={3} sx={{ p: 4, mt: 8, borderRadius: 3 }}>
-                <Typography variant="h4"  align="center" >
+            <Paper elevation={3} sx={{p: 4, mt: 8, borderRadius: 3, textAlign: 'center',}}>
+                <Typography variant="h4" align="center">
                     ログイン
                 </Typography>
 
                 <Box
                     component="form"
-                    onSubmit={handleSubmit}
+                    onSubmit={handleSubmit(onSubmit)}
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
@@ -29,27 +52,33 @@ const Login = () => {
                     <TextField
                         label="メールアドレス"
                         type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                        {...register('email', {
+                            required: 'メールアドレスは必須です',
+                        })}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
 
                     />
                     <TextField
                         label="パスワード"
                         type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
+                        {...register('password', {
+                            required: 'パスワードは必須です',
+                        })}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
                     />
+
+                    {error && <Typography>{error}</Typography>}
 
                     <Button
                         variant="contained"
                         color="primary"
                         type="submit"
                         size="large"
-
+                        disabled={loading}
                     >
-                        ログイン
+                        {loading ? 'ログイン中...' : 'ログイン'}
                     </Button>
 
                 </Box>

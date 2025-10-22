@@ -17,20 +17,32 @@ import {
     DialogContent,
     DialogActions,
 } from '@mui/material';
+import {useNavigate} from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete';
 import useDepartmentsListStore from '../store/useDepartmentsListStore.js';
+import useAuthStore from '../store/useAuthStore.js'
 import DeleteDialog from '../components/dialogs/DeleteDialog';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 function DepartmentList() {
-    const { t } = useTranslation();
-    const {departments, fetchDepartments, addDepartment,deleteDepartment} = useDepartmentsListStore();
+    const navigate = useNavigate();
+    const {t} = useTranslation();
+    const {departments, fetchDepartments, addDepartment, deleteDepartment} = useDepartmentsListStore();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [name, setName] = useState('');
     const [error, setError] = useState('');
 
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
+
+    const {isLoggedIn} = useAuthStore();
+
+    //ログインしていない場合ログイン画面へリダイレクト
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/');
+        }
+    }, [isLoggedIn, navigate]);
 
     useEffect(() => {
         fetchDepartments();
@@ -96,7 +108,7 @@ function DepartmentList() {
                                 <TableRow key={department.id} hover>
                                     <TableCell>{department.name}</TableCell>
                                     <TableCell align="right">
-                                        <IconButton color="error"  onClick={() => handleOpenDeleteDialog(department.id)}>
+                                        <IconButton color="error" onClick={() => handleOpenDeleteDialog(department.id)}>
                                             <DeleteIcon/>
                                         </IconButton>
                                     </TableCell>

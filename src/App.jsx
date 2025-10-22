@@ -17,6 +17,7 @@ import EmployeeForm from './pages/EmployeeForm'
 import DepartmentList from "./pages/DepartmentList";
 import Login from "./pages/Login";
 import useEmployeesListStore from './store/useEmployeesListStore.js'
+import useAuthStore from './store/useAuthStore.js'
 import {useTranslation} from 'react-i18next'
 
 const theme = createTheme({});
@@ -26,6 +27,7 @@ export default function App() {
 
     const navigate = useNavigate();
     const fetchMasters = useEmployeesListStore((s) => s.fetchMasters);
+    const {isLoggedIn,logout} = useAuthStore();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -82,14 +84,15 @@ export default function App() {
 
                         </MenuItem>
                     </Menu>
+                    <Button variant="contained" onClick={()=>{logout(); navigate('/');}}>ログアウト</Button>
                     {/*<Button variant="contained" onClick={() => navigate('/')}>ユーザー一覧</Button>*/}
                     {/*<Button sx={{ ml: 1 }} variant="outlined" onClick={() => navigate('/new')}>ユーザーの作成</Button>*/}
                 </Toolbar>
             </AppBar>
             <Container sx={{mt: 3}}>
                 <Routes>
-                    <Route path="/" element={<EmployeeList/>}/>
-                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/employees" element={<EmployeeList/>}/>
+                    <Route path="/" element={<Login/>}/>
                     <Route path="/departments" element={<DepartmentList/>}/>
                     <Route path="/new" element={<EmployeeForm/>}/>
                     <Route path="/edit/:id" element={<EmployeeForm/>}/>

@@ -24,10 +24,14 @@ export const employeeService = {
         await api.delete(`/employees/${id}`)
     },
     async login(email, password) {
-        const res = await api.get(`/employees?email=${email}&password=${password}&_expand=department&_expand=role`)
-        // 該当するユーザーがいれば配列の最初の要素を返す
+        const res = await api.get(`/employees?email=${email}&password=${password}`)
         return res.data.length > 0 ? res.data[0] : null
     },
+
+    // async login(email, password) {
+    //     const res = await api.post('/login', {email, password});
+    //     return res.data;
+    // },
 }
 
 export const masterService = {
