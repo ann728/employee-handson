@@ -162,7 +162,7 @@ function EmployeeList() {
             <TextField
                 fullWidth
                 size="small"
-                placeholder={t('employeeList.placeholder.search')} s
+                placeholder={t('employeeList.placeholder.search')}
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 sx={{mb: 2}}

@@ -119,11 +119,11 @@ export default function App() {
 
             <Snackbar
                 open={snackbarOpen}
-                autoHideDuration={2000}
+                autoHideDuration={1000}
                 onClose={() => setSnackbarOpen(false)}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
-                <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+                <Alert onClose={() => setSnackbarOpen(false)} variant="filled"　severity="success" sx={{ width: '100%' }}>
                     ログアウトしました
                 </Alert>
             </Snackbar>
