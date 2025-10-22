@@ -26,7 +26,7 @@ import {useTranslation} from 'react-i18next';
 
 function DepartmentList() {
     const navigate = useNavigate();
-    const {t} = useTranslation();
+    const {t,i18n} = useTranslation();
     const {departments, fetchDepartments, addDepartment, deleteDepartment} = useDepartmentsListStore();
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [name, setName] = useState('');
@@ -82,6 +82,9 @@ function DepartmentList() {
         }
         handleCloseDeleteDialog();
     }
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
 
     return (
         <Box>
@@ -90,6 +93,10 @@ function DepartmentList() {
                 <Button variant="contained" onClick={handleOpenAddDialog}>
                     {t('departmentList.addButton')}
                 </Button>
+            </Box>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button variant="outlined" onClick={() => changeLanguage("ja")}>日本語</Button>
+                <Button variant="outlined" onClick={() => changeLanguage("en")}>English</Button>
             </Box>
 
             <TableContainer component={Paper}>

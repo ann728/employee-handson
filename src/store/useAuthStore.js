@@ -32,7 +32,6 @@ const useAuthStore = create(
 
                 }),
 
-
             login: async (email, password) => {
                 try {
                     set({loading: true, error: null});
@@ -58,7 +57,6 @@ const useAuthStore = create(
                 }
             },
 
-
             logout: () =>
                 set({
                     id: null,
@@ -71,9 +69,6 @@ const useAuthStore = create(
                     error: null,
                     isLoggedIn: false,
                 }),
-
-
-
         }),
         {name: 'user-storage'}
     )

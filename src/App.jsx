@@ -27,7 +27,7 @@ export default function App() {
 
     const navigate = useNavigate();
     const fetchMasters = useEmployeesListStore((s) => s.fetchMasters);
-    const {isLoggedIn,logout} = useAuthStore();
+    const {isLoggedIn, logout} = useAuthStore();
 
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -84,7 +84,17 @@ export default function App() {
 
                         </MenuItem>
                     </Menu>
-                    <Button variant="contained" onClick={()=>{logout(); navigate('/');}}>ログアウト</Button>
+                    {isLoggedIn && (
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                logout();
+                                navigate('/');
+                            }}
+                        >
+                            ログアウト
+                        </Button>
+                    )}
                     {/*<Button variant="contained" onClick={() => navigate('/')}>ユーザー一覧</Button>*/}
                     {/*<Button sx={{ ml: 1 }} variant="outlined" onClick={() => navigate('/new')}>ユーザーの作成</Button>*/}
                 </Toolbar>

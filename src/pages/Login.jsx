@@ -1,12 +1,15 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom'
-import {Box, Button, Container, TextField, Typography, Paper,Alert} from '@mui/material';
+import {Box, Button, Container, TextField, Typography, Paper, Alert, Snackbar} from '@mui/material';
 import {useForm} from 'react-hook-form'
 import useAuthStore from '../store/useAuthStore'
 
 const Login = () => {
+    const navigate = useNavigate();
+    const {login, error, loading, isLoggedIn} = useAuthStore();
+    const [open, setOpen] = useState(false);
+    const [rehydrated, setRehydrated] = useState(false);
 
-    const { login, error, loading, isLoggedIn } = useAuthStore();
 
     const {
         register,
@@ -22,15 +25,31 @@ const Login = () => {
     const onSubmit = async (data) => {
         const success = await login(data.email, data.password);
         if (!success) return;
-        navigate('/employees')
-    }
+        setOpen(true);
+        // navigate('/employees');
+
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+        navigate('/employees');
+    };
 
     useEffect(() => {
-        console.log("isLoggedIn:", isLoggedIn)
+        const timer = setTimeout(() => setRehydrated(true), 0);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        if (!rehydrated) return;
+
         if (isLoggedIn) {
-            navigate('/employees')
+            navigate('/employees');
         }
-    }, [isLoggedIn, navigate]);
+    }, [rehydrated, isLoggedIn, navigate]);
 
     return (
         <Container maxWidth="sm">
@@ -68,9 +87,7 @@ const Login = () => {
                         error={!!errors.password}
                         helperText={errors.password?.message}
                     />
-
                     {error && <Typography>{error}</Typography>}
-
                     <Button
                         variant="contained"
                         color="primary"
@@ -80,6 +97,16 @@ const Login = () => {
                     >
                         {loading ? 'ログイン中...' : 'ログイン'}
                     </Button>
+
+                    <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
+                        <Alert
+                            onClose={handleClose}
+                            severity="success"
+                            variant="filled"
+                        >
+                            Snackbar + Alert !!
+                        </Alert>
+                    </Snackbar>
 
                 </Box>
             </Paper>

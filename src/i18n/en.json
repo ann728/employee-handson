@@ -1,0 +1,21 @@
+{
+  "departmentList": {
+    "title": "Department List",
+    "addButton": "Add Department",
+    "dialogTitle": "Add Department",
+    "labelName": "Department Name",
+    "cancel": "Cancel",
+    "save": "Save",
+    "tableHeader": {
+      "name": "Department Name",
+      "action": "Action"
+    },
+    "errorName": "Please enter a department name"
+  },
+  "app": {
+    "title": "Employee Directory",
+    "menu": {
+      "dashboard": "Dashboard"
+    }
+  }
+}
