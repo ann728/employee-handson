@@ -55,7 +55,11 @@ export const masterService = {
     },
     async removeDepartment(id) {
         await api.delete(`/departments/${id}`);
-    }
+    },
+    async updateDepartment(id, payload) {
+        const res = await api.put(`/departments/${id}`, payload);
+        return res.data;
+    },
 }
 
 

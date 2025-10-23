@@ -8,6 +8,7 @@
     "title": "部署一覧",
     "addButton": "部署の追加",
     "dialogTitle": "部署追加",
+    "editDialogTitle": "部署編集",
     "labelName": "部署名",
     "cancel": "キャンセル",
     "save": "保存",

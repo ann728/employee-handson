@@ -20,12 +20,37 @@ const useDepartmentsListStore = create((set, get) => ({
         }
     },
 
-    async addDepartment(payload) {
+    // async addDepartment(payload) {
+    //     try {
+    //         const department = await masterService.addDepartment(payload);
+    //         set((state) => ({
+    //             departments: [...state.departments, department]
+    //         }));
+    //     } catch (e) {
+    //         set({error: e.message});
+    //     }
+    // },
+
+    async saveDepartment(dep) {
         try {
-            const department = await masterService.addDepartment(payload);
-            set((state) => ({
-                departments: [...state.departments, department]
-            }));
+            const idNum = Number(dep.id);
+            const isNew = !idNum;
+
+            let result;
+            if (isNew) {
+                result = await masterService.addDepartment(dep);
+                set((state) => ({
+                    departments: [...state.departments, result],
+                }));
+            } else {
+                result = await masterService.updateDepartment(dep.id, dep);
+                set((state) => ({
+                    departments: state.departments.map((d) =>
+                        d.id === dep.id ? result : d
+                    ),
+                }));
+            }
+            return result;
         } catch (e) {
             set({error: e.message});
         }

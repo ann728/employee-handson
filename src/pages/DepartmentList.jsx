@@ -23,16 +23,20 @@ import useDepartmentsListStore from '../store/useDepartmentsListStore.js';
 import useAuthStore from '../store/useAuthStore.js'
 import DeleteDialog from '../components/dialogs/DeleteDialog';
 import {useTranslation} from 'react-i18next';
+import EditIcon from "@mui/icons-material/Edit";
+
 
 function DepartmentList() {
     const navigate = useNavigate();
-    const {t,i18n} = useTranslation();
-    const {departments, fetchDepartments, addDepartment, deleteDepartment} = useDepartmentsListStore();
-    const [openAddDialog, setOpenAddDialog] = useState(false);
+    const {t, i18n} = useTranslation();
+    const {departments, fetchDepartments, addDepartment, deleteDepartment, saveDepartment} = useDepartmentsListStore();
+    //const [openAddDialog, setOpenAddDialog] = useState(false);
     const [name, setName] = useState('');
     const [error, setError] = useState('');
 
+    const [openDialog, setOpenDialog] = useState(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
     const [selectedId, setSelectedId] = useState(null);
 
     const {isLoggedIn} = useAuthStore();
@@ -49,13 +53,21 @@ function DepartmentList() {
     }, []);
 
     const handleOpenAddDialog = () => {
-        setOpenAddDialog(true);
+        setSelectedId(null);
+        setOpenDialog(true);
         setName('')
         setError('')
     }
 
-    const handleCloseAddDialog = () => {
-        setOpenAddDialog(false);
+    const handleOpenEditDialog = (department) => {
+        setSelectedId(department.id);
+        setName(department.name);
+        setError('');
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
     }
 
     const handleSave = async () => {
@@ -63,8 +75,16 @@ function DepartmentList() {
             setError(t('departmentList.errorName'))
             return
         }
-        await addDepartment({name});
-        handleCloseAddDialog();
+
+        const dep = selectedId ? {id: selectedId, name} : {name};
+        await saveDepartment(dep);
+
+        setSelectedId(null);
+        handleCloseDialog();
+
+        //await addDepartment({name});
+        //handleCloseAddDialog();
+
     }
     const handleOpenDeleteDialog = (id) => {
         setSelectedId(id);
@@ -94,7 +114,7 @@ function DepartmentList() {
                     {t('departmentList.addButton')}
                 </Button>
             </Box>
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{display: 'flex', gap: 1}}>
                 <Button variant="outlined" onClick={() => changeLanguage("ja")}>日本語</Button>
                 <Button variant="outlined" onClick={() => changeLanguage("en")}>English</Button>
             </Box>
@@ -115,6 +135,9 @@ function DepartmentList() {
                                 <TableRow key={department.id} hover>
                                     <TableCell>{department.name}</TableCell>
                                     <TableCell align="right">
+                                        <IconButton color="primary" onClick={() => handleOpenEditDialog(department)}>
+                                            <EditIcon/>
+                                        </IconButton>
                                         <IconButton color="error" onClick={() => handleOpenDeleteDialog(department.id)}>
                                             <DeleteIcon/>
                                         </IconButton>
@@ -126,8 +149,12 @@ function DepartmentList() {
                 </Table>
             </TableContainer>
 
-            <Dialog open={openAddDialog} onClose={handleCloseAddDialog} sx={{'& .MuiDialog-paper': {p: 2}}}>
-                <DialogTitle>{t('departmentList.dialogTitle')}</DialogTitle>
+            <Dialog open={openDialog} onClose={handleCloseDialog} sx={{'& .MuiDialog-paper': {p: 2}}}>
+                <DialogTitle>
+                    {selectedId === null
+                        ? t('departmentList.dialogTitle')
+                        : t('departmentList.editDialogTitle')}
+                </DialogTitle>
                 <DialogContent>
                     <TextField
                         fullWidth
@@ -142,7 +169,7 @@ function DepartmentList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseAddDialog}>{t('departmentList.cancel')}</Button>
+                    <Button onClick={handleCloseDialog}>{t('departmentList.cancel')}</Button>
                     <Button variant="contained" onClick={handleSave}>
                         {t('departmentList.save')}
                     </Button>
