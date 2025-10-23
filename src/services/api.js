@@ -18,7 +18,7 @@ export const employeeService = {
         return res.data
     },
     async update(id, payload) {
-        const res = await api.put(`/employees/${id}`, payload)
+        const res = await api.patch(`/employees/${id}`, payload)
         return res.data
     },
     async remove(id) {

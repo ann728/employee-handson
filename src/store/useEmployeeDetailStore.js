@@ -22,22 +22,25 @@ const useEmployeeDetailStore = create((set, get) => ({
         }
     },
 
+    //ID有無で新規 or 更新を判定して API 呼び出し
     async saveEmployee(emp) {
         const idNum = Number(emp.id);
         const isNew = !idNum;
 
 
-        if (emp.password) {
-            emp.password = bcrypt.hashSync(emp.password, 10);
-        } else if (!isNew && emp.password === '') {
+        if (!emp.password) {
             delete emp.password;
+        } else {
+            emp.password = bcrypt.hashSync(emp.password, 10);
         }
 
         if (isNew) {
-            await employeeService.create(emp)
+            await employeeService.create(emp);
         } else {
-            await employeeService.update(emp.id, emp)
+            await employeeService.update(emp.id, emp);
         }
+
+
 
         return true;
     },

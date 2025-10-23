@@ -69,12 +69,14 @@ export default function EmployeeForm() {
                     email: data.email,
                     phone: data.phone,
                     departmentId: data.departmentId != null ? String(data.departmentId) : '',
-                    roleId: data.roleId != null ? String(data.roleId) : ''
+                    roleId: data.roleId != null ? String(data.roleId) : '',
+                    password: undefined,
 
                 });
             } else {
                 reset(initial);
             }
+
         }
 
         load()
@@ -102,6 +104,11 @@ export default function EmployeeForm() {
             departmentId: data.departmentId === '' ? null : Number(data.departmentId),
             roleId: data.roleId === '' ? null : Number(data.roleId),
         };
+
+        if (payload.password === '' || payload.password == null) {
+            delete payload.password;
+        }
+
         const result = await saveEmployee(payload);
         if (result) {
             navigate('/');
@@ -220,6 +227,7 @@ export default function EmployeeForm() {
                                 <TextField
                                     {...field}
                                     type="password"
+                                    defaultValue={undefined}
                                     fullWidth
                                     label={t('employeeForm.labels.password')}
                                     error={!!errors.password}
@@ -227,6 +235,7 @@ export default function EmployeeForm() {
                                         ? t('employeeForm.helper.passwordUpdate')
                                         : errors.password?.message
                                     }
+
                                 />
                             )}
                         />
