@@ -17,7 +17,9 @@ export function useEmployeeSchema(isNew) {
 
     return z.object({
         name: z.string().min(1, t('employeeForm.errors.name')),
-        email: z.string().email(t('employeeForm.errors.email')).min(1, t('employeeForm.errors.email')),
+        email: z.string()
+            .email(t('employeeForm.errors.email'))
+            .min(1, t('employeeForm.errors.email')),
         phone: z
             .string()
             .min(1, t('employeeForm.errors.phone.required'))
@@ -25,7 +27,9 @@ export function useEmployeeSchema(isNew) {
         departmentId: z.string().min(1, t('employeeForm.errors.department')),
         roleId: z.string().min(1, t('employeeForm.errors.role')),
         password: isNew
-            ? z.string().min(3, t('employeeForm.errors.password'))
+            ? z.string()
+                .min(1, t('employeeForm.errors.password'))
+                .min(3, t('employeeForm.errors.passwordLength'))
             : z.string().optional(),
     });
 }
@@ -220,7 +224,7 @@ export default function EmployeeForm() {
                                     label={t('employeeForm.labels.password')}
                                     error={!!errors.password}
                                     helperText={id
-                                        ? t('employeeForm.helper.passwordUpdate') // 更新時のみ
+                                        ? t('employeeForm.helper.passwordUpdate')
                                         : errors.password?.message
                                     }
                                 />
