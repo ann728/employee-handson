@@ -3,18 +3,17 @@ import {useNavigate} from 'react-router-dom'
 import {Box, Button, Container, TextField, Typography, Paper, Alert, Snackbar} from '@mui/material';
 import {useForm} from 'react-hook-form'
 import useAuthStore from '../store/useAuthStore'
-import { employeeService } from '../services/api';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 
 
 export const loginSchema = z.object({
     email: z.string()
         .email('正しいメールアドレスを入力してください'),
-        // .refine(async (email) => {
-        //     const res = await employeeService.list();
-        //     return res.some(user => user.email === email);
-        // }, { message: '存在しないメールアドレスです' }),
+    // .refine(async (email) => {
+    //     const res = await employeeService.list();
+    //     return res.some(user => user.email === email);
+    // }, { message: '存在しないメールアドレスです' }),
     password: z.string().min(1, 'パスワードは必須です'),
 });
 
@@ -23,7 +22,7 @@ const Login = () => {
     const navigate = useNavigate();
     const {login, error, loading, isLoggedIn} = useAuthStore();
     const [open, setOpen] = useState(false);
-   // const [rehydrated, setRehydrated] = useState(false);
+    // const [rehydrated, setRehydrated] = useState(false);
 
 
     const {
@@ -65,7 +64,7 @@ const Login = () => {
         if (isLoggedIn) {
             navigate('/employees');
         }
-    }, [ isLoggedIn, navigate]);
+    }, [isLoggedIn, navigate]);
 
     return (
         <Container maxWidth="sm">
@@ -103,7 +102,14 @@ const Login = () => {
                         error={!!errors.password}
                         helperText={errors.password?.message}
                     />
-                    {error && <Typography>{error}</Typography>}
+
+                    {error && (
+                        <Box sx={{mt: 2}}>
+                            <Alert severity="error" sx={{width: '100%'}} >
+                                {error}
+                            </Alert>
+                        </Box>
+                    )}
                     <Button
                         variant="contained"
                         color="primary"
