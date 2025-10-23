@@ -52,6 +52,8 @@ const hashedPassword = bcrypt.hashSync(password, 10);
 // ログイン時（照合）
 const isMatch = bcrypt.compareSync(inputPassword, user.password);
 
+---
+
 ## 参考サイト（引用用）
 
 - [bcryptjs 公式リポジトリ](https://www.npmjs.com/package/bcryptjs)
