@@ -61,7 +61,8 @@
     "phone": "電話番号",
     "department": "部署",
     "role": "権限",
-    "actions": "アクション"
+    "actions": "アクション",
+    "noResults": "該当するユーザーが見つかりませんでした"
   },
   "app": {
     "title": "社員名簿",

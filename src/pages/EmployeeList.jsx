@@ -214,7 +214,8 @@ function EmployeeList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedRows.map((e) => (
+                        {sortedRows.length > 0 ?
+                            (sortedRows.map((e) => (
                             <TableRow key={e.id} hover>
                                 <TableCell>
                                     <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
@@ -233,31 +234,19 @@ function EmployeeList() {
                                         <DeleteIcon/>
                                     </IconButton>
                                 </TableCell>
-                            </TableRow>))}
+                            </TableRow>))
+                        ):(
+                            <TableRow>
+                                <TableCell colSpan={5} align="center">
+                                    {t('employeeList.noResults')}
+                                </TableCell>
+                            </TableRow>
+                        )}
+
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            {/*<Dialog*/}
-            {/*    open={openDialog}*/}
-            {/*    onClose={handleCloseDialog}*/}
-            {/*    sx={{'& .MuiDialog-paper': {p: 2}}}*/}
-            {/*    slots={{*/}
-            {/*        transition: Transition,*/}
-            {/*    }}*/}
-            {/*>*/}
-            {/*    <DialogContent>*/}
-            {/*        <Alert variant="outlined" severity="info">*/}
-            {/*            本当にこのユーザーを削除してもよろしいですか？*/}
-            {/*        </Alert>*/}
-            {/*    </DialogContent>*/}
-            {/*    <DialogActions>*/}
-            {/*        <Button color="grey" onClick={handleCloseDialog}>キャンセル</Button>*/}
-            {/*        <Button color="error" variant="contained" onClick={handleDelete} startIcon={<DeleteIcon/>}>*/}
-            {/*            削除*/}
-            {/*        </Button>*/}
-            {/*    </DialogActions>*/}
-            {/*</Dialog>*/}
             <DeleteDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
