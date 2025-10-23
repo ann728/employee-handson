@@ -34,7 +34,6 @@ export function useEmployeeSchema(isNew) {
     });
 }
 
-
 export default function EmployeeForm() {
 
     const {t} = useTranslation();
@@ -99,7 +98,6 @@ export default function EmployeeForm() {
         console.log("submit data:", data);
         const payload = {
             ...data,
-            // id: data.id ? Number(data.id) : undefined,
             id: id,
             departmentId: data.departmentId === '' ? null : Number(data.departmentId),
             roleId: data.roleId === '' ? null : Number(data.roleId),

@@ -40,8 +40,6 @@ const useEmployeeDetailStore = create((set, get) => ({
             await employeeService.update(emp.id, emp);
         }
 
-
-
         return true;
     },
 

@@ -70,8 +70,6 @@ const useAuthStore = create(
         }),
         {
             name: 'user-storage',
-
-
         },
     )
 )

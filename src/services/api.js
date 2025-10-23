@@ -25,10 +25,8 @@ export const employeeService = {
         await api.delete(`/employees/${id}`)
     },
     async login(email, password) {
-        //const res = await api.get(`/employees?email=${email}&password=${password}`)
-        // return res.data.length > 0 ? res.data[0] : null
-        const res = await api.get(`/employees?email=${email}`)
 
+        const res = await api.get(`/employees?email=${email}`)
         const user = res.data[0];
         if (user) {
             const isMatch = bcrypt.compareSync(password, user.password);

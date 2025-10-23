@@ -6,7 +6,6 @@ import useAuthStore from '../store/useAuthStore'
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
 
-
 export const loginSchema = z.object({
     email: z.string()
         .email('正しいメールアドレスを入力してください'),
@@ -17,13 +16,10 @@ export const loginSchema = z.object({
     password: z.string().min(1, 'パスワードは必須です'),
 });
 
-
 const Login = () => {
     const navigate = useNavigate();
     const {login, error, loading, isLoggedIn} = useAuthStore();
     const [open, setOpen] = useState(false);
-    // const [rehydrated, setRehydrated] = useState(false);
-
 
     const {
         register,
@@ -41,7 +37,7 @@ const Login = () => {
         const success = await login(data.email, data.password);
         if (!success) return;
         setOpen(true);
-        //navigate('/employees');
+        navigate('/employees');
 
     };
 
@@ -53,14 +49,7 @@ const Login = () => {
         navigate('/employees');
     };
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => setRehydrated(true), 0);
-    //     return () => clearTimeout(timer);
-    // }, []);
-
     useEffect(() => {
-        // if (!rehydrated) return;
-
         if (isLoggedIn) {
             navigate('/employees');
         }
