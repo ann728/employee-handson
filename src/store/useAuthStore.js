@@ -39,7 +39,6 @@ const useAuthStore = create(
                     //  const users = await employeeService.list();
                     const user = await employeeService.login(email, password);
 
-
                     if (!user) {
                         set({error: 'メールアドレスまたはパスワードが違います'});
                         return false;
