@@ -105,10 +105,6 @@ export default function EmployeeForm() {
             roleId: data.roleId === '' ? null : Number(data.roleId),
         };
 
-        if (payload.password === '' || payload.password == null) {
-            delete payload.password;
-        }
-
         const result = await saveEmployee(payload);
         if (result) {
             navigate('/');
@@ -227,7 +223,6 @@ export default function EmployeeForm() {
                                 <TextField
                                     {...field}
                                     type="password"
-                                    defaultValue={undefined}
                                     fullWidth
                                     label={t('employeeForm.labels.password')}
                                     error={!!errors.password}
