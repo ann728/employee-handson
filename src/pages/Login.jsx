@@ -23,7 +23,7 @@ const Login = () => {
     const navigate = useNavigate();
     const {login, error, loading, isLoggedIn} = useAuthStore();
     const [open, setOpen] = useState(false);
-    const [rehydrated, setRehydrated] = useState(false);
+   // const [rehydrated, setRehydrated] = useState(false);
 
 
     const {
@@ -54,18 +54,18 @@ const Login = () => {
         navigate('/employees');
     };
 
-    useEffect(() => {
-        const timer = setTimeout(() => setRehydrated(true), 0);
-        return () => clearTimeout(timer);
-    }, []);
+    // useEffect(() => {
+    //     const timer = setTimeout(() => setRehydrated(true), 0);
+    //     return () => clearTimeout(timer);
+    // }, []);
 
     useEffect(() => {
-        if (!rehydrated) return;
+        // if (!rehydrated) return;
 
         if (isLoggedIn) {
             navigate('/employees');
         }
-    }, [rehydrated, isLoggedIn, navigate]);
+    }, [ isLoggedIn, navigate]);
 
     return (
         <Container maxWidth="sm">
