@@ -14,10 +14,12 @@ import {
     TextField,
     Typography,
     TableSortLabel,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate,useLocation} from 'react-router-dom';
 import useEmployeesListStore from '../store/useEmployeesListStore.js';
 import useAuthStore from '../store/useAuthStore.js'
 import DeleteDialog from '../components/dialogs/DeleteDialog';
@@ -77,6 +79,17 @@ function EmployeeList() {
     const [order, setOrder] = useState('asc'); // 昇順か降順か
     const [orderBy, setOrderBy] = useState('name'); // どの列でソートするか
 
+    const location = useLocation();
+    const [open, setOpen] = useState(false);
+    const [message, setMessage] = useState('');
+
+    useEffect(() => {
+        if (location.state?.showSnackbar) {
+            setMessage(location.state.message || '');
+            setOpen(true);
+        }
+    }, [location.state]);
+
     //ログインしていない場合ログイン画面へリダイレクト
     useEffect(() => {
         if (!isLoggedIn) {
@@ -118,6 +131,11 @@ function EmployeeList() {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setOpen(false);
     };
 
     //返された比較関数を使って実際に並べ替える
@@ -241,6 +259,12 @@ function EmployeeList() {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert onClose={handleClose} severity="success" variant="filled">
+                    {message}
+                </Alert>
+            </Snackbar>
 
             <DeleteDialog
                 open={openDialog}

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate} from 'react-router-dom'
-import {Box, Button, Container, TextField, Typography, Paper, Alert, Snackbar} from '@mui/material';
+import {Box, Button, Container, TextField, Typography, Paper, Alert} from '@mui/material';
 import {useForm} from 'react-hook-form'
 import useAuthStore from '../store/useAuthStore'
 import {z} from 'zod';
@@ -19,7 +19,6 @@ export const loginSchema = z.object({
 const Login = () => {
     const navigate = useNavigate();
     const {login, error, loading, isLoggedIn} = useAuthStore();
-    const [open, setOpen] = useState(false);
 
     const {
         register,
@@ -36,8 +35,8 @@ const Login = () => {
     const onSubmit = async (data) => {
         const success = await login(data.email, data.password);
         if (!success) return;
-        setOpen(true);
-        navigate('/employees');
+
+        navigate('/employees', { state: { showSnackbar: true, message: 'ログインが完了しました' } });
 
     };
 
@@ -45,7 +44,6 @@ const Login = () => {
         if (reason === 'clickaway') {
             return;
         }
-        setOpen(false);
         navigate('/employees');
     };
 
@@ -109,15 +107,15 @@ const Login = () => {
                         {loading ? 'ログイン中...' : 'ログイン'}
                     </Button>
 
-                    <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-                        <Alert
-                            onClose={() => setOpen(false)}
-                            severity="success"
-                            variant="filled"
-                        >
-                            ログインが完了しました
-                        </Alert>
-                    </Snackbar>
+                    {/*<Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>*/}
+                    {/*    <Alert*/}
+                    {/*        onClose={() => setOpen(false)}*/}
+                    {/*        severity="success"*/}
+                    {/*        variant="filled"*/}
+                    {/*    >*/}
+                    {/*        ログインが完了しました*/}
+                    {/*    </Alert>*/}
+                    {/*</Snackbar>*/}
 
                 </Box>
             </Paper>
