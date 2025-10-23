@@ -51,3 +51,12 @@ const hashedPassword = bcrypt.hashSync(password, 10);
 
 // ログイン時（照合）
 const isMatch = bcrypt.compareSync(inputPassword, user.password);
+
+## 参考サイト（引用用）
+
+- [bcryptjs 公式リポジトリ](https://www.npmjs.com/package/bcryptjs)
+- [crypto-js 公式リポジトリ](https://www.npmjs.com/package/crypto-js)
+- [argon2-browser 公式リポジトリ](https://www.npmjs.com/package/argon2-browser)
+- [Node.js 標準モジュール crypto](https://nodejs.org/api/crypto.html)
+- [Auth0: Hashing in Action – Understanding bcrypt](https://auth0.com/blog/hashing-in-action-understanding-bcrypt/)
+
