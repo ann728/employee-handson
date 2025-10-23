@@ -36,8 +36,8 @@ const useAuthStore = create(
                 try {
                     set({loading: true, error: null});
 
-                   //  const users = await employeeService.list();
-                    const user = await employeeService.login(email,password);
+                    //  const users = await employeeService.list();
+                    const user = await employeeService.login(email, password);
 
 
                     if (!user) {
@@ -46,7 +46,7 @@ const useAuthStore = create(
                     }
 
                     get().setUser(user);
-                    set({ isLoggedIn: true });
+                    set({isLoggedIn: true});
                     return true;
                 } catch (err) {
                     set({error: 'ログインに失敗しました'});
@@ -56,7 +56,6 @@ const useAuthStore = create(
 
                 }
             },
-
             logout: () =>
                 set({
                     id: null,
@@ -70,7 +69,11 @@ const useAuthStore = create(
                     isLoggedIn: false,
                 }),
         }),
-        {name: 'user-storage'}
+        {
+            name: 'user-storage',
+
+
+        },
     )
 )
 

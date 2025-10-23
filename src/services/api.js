@@ -1,4 +1,5 @@
 import axios from 'axios'
+import bcrypt from 'bcryptjs';
 
 const api = axios.create({baseURL: 'http://localhost:8080'})
 
@@ -24,14 +25,19 @@ export const employeeService = {
         await api.delete(`/employees/${id}`)
     },
     async login(email, password) {
-        const res = await api.get(`/employees?email=${email}&password=${password}`)
-        return res.data.length > 0 ? res.data[0] : null
-    },
+        //const res = await api.get(`/employees?email=${email}&password=${password}`)
+        // return res.data.length > 0 ? res.data[0] : null
+        const res = await api.get(`/employees?email=${email}`)
 
-    // async login(email, password) {
-    //     const res = await api.post('/login', {email, password});
-    //     return res.data;
-    // },
+        const user = res.data[0];
+        if (user) {
+            const isMatch = bcrypt.compareSync(password, user.password);
+            if (isMatch) {
+                return user;
+            }
+        }
+        return null;
+    },
 }
 
 export const masterService = {

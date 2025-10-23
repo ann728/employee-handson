@@ -1,5 +1,6 @@
 import {create} from 'zustand'
 import {employeeService} from '../services/api.js'
+import bcrypt from 'bcryptjs'
 
 //詳細画面専用のストア
 const useEmployeeDetailStore = create((set, get) => ({
@@ -21,10 +22,17 @@ const useEmployeeDetailStore = create((set, get) => ({
         }
     },
 
-    //ID有無で新規 or 更新を判定して API 呼び出し
     async saveEmployee(emp) {
         const idNum = Number(emp.id);
         const isNew = !idNum;
+
+
+        if (emp.password) {
+            emp.password = bcrypt.hashSync(emp.password, 10);
+        } else if (!isNew && emp.password === '') {
+            delete emp.password;
+        }
+
         if (isNew) {
             await employeeService.create(emp)
         } else {

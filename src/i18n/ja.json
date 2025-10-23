@@ -27,10 +27,15 @@
       "name": "ユーザー名",
       "phone": "電話番号",
       "department": "所属",
-      "role": "権限"
+      "role": "権限",
+      "email": "メールアドレス",
+      "password": "パスワード"
     },
     "placeholders": {
       "select": "選択してください"
+    },
+    "helper": {
+      "passwordUpdate": "空欄の場合はパスワードは変更されません"
     },
     "errors": {
       "name": "名前は必須です",

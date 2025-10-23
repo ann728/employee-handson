@@ -10,19 +10,23 @@ import {z} from 'zod';
 import {useTranslation} from 'react-i18next';
 
 
-const initial = {id: undefined, name: '', phone: '', departmentId: '', roleId: ''}
+const initial = {id: undefined, email: '', name: '', phone: '', departmentId: '', roleId: ''}
 
-export function useEmployeeSchema() {
+export function useEmployeeSchema(isNew) {
     const {t} = useTranslation();
 
     return z.object({
         name: z.string().min(1, t('employeeForm.errors.name')),
+        email: z.string().email(t('employeeForm.errors.email')).min(1, t('employeeForm.errors.email')),
         phone: z
             .string()
             .min(1, t('employeeForm.errors.phone.required'))
             .regex(/^0\d{9,10}$/, t('employeeForm.errors.phone.format')),
         departmentId: z.string().min(1, t('employeeForm.errors.department')),
         roleId: z.string().min(1, t('employeeForm.errors.role')),
+        password: isNew
+            ? z.string().min(3, t('employeeForm.errors.password'))
+            : z.string().optional(),
     });
 }
 
@@ -35,7 +39,7 @@ export default function EmployeeForm() {
     const {roles, departments, fetchMasters} = useEmployeesListStore();
     const {isLoggedIn} = useAuthStore();
 
-    const employeeSchema = useEmployeeSchema();
+    const employeeSchema = useEmployeeSchema(!id);
 
     // useEmployeeDetailStore から詳細データを取得
     const {
@@ -58,6 +62,7 @@ export default function EmployeeForm() {
                 reset({
                     id: data.id != null ? String(data.id) : '',
                     name: data.name,
+                    email: data.email,
                     phone: data.phone,
                     departmentId: data.departmentId != null ? String(data.departmentId) : '',
                     roleId: data.roleId != null ? String(data.roleId) : ''
@@ -129,6 +134,21 @@ export default function EmployeeForm() {
                     </Grid>
                     <Grid item xs={12}>
                         <Controller
+                            name="email"
+                            control={control}
+                            render={({field}) => (
+                                <TextField
+                                    {...field}
+                                    fullWidth
+                                    label={t('employeeForm.labels.email')}
+                                    error={!!errors.email}
+                                    helperText={errors.email?.message}
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Controller
                             name="phone"
                             control={control}
                             render={({field}) => (<TextField
@@ -186,6 +206,25 @@ export default function EmployeeForm() {
                                 {roles.map((r) => (
                                     <MenuItem key={r.id} value={r.id.toString()}>{r.name}</MenuItem>))}
                             </TextField>)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Controller
+                            name="password"
+                            control={control}
+                            render={({field}) => (
+                                <TextField
+                                    {...field}
+                                    type="password"
+                                    fullWidth
+                                    label={t('employeeForm.labels.password')}
+                                    error={!!errors.password}
+                                    helperText={id
+                                        ? t('employeeForm.helper.passwordUpdate') // 更新時のみ
+                                        : errors.password?.message
+                                    }
+                                />
+                            )}
                         />
                     </Grid>
                 </Grid>
