@@ -167,7 +167,7 @@ function EmployeeList() {
         <Box>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                 <Typography variant="h5">{t('employeeList.title')}</Typography>
-                <Button variant="contained" onClick={() => navigate('/new')}>
+                <Button variant="action" onClick={() => navigate('/new')}>
                     {t('employeeList.create')}
                 </Button>
             </Box>

@@ -13,7 +13,8 @@ import {
     MenuItem,
     Box,
     Snackbar,
-    Alert
+    Alert,
+    Switch
 } from '@mui/material'
 import EmployeeList from './pages/EmployeeList'
 import EmployeeForm from './pages/EmployeeForm'
@@ -23,7 +24,67 @@ import useEmployeesListStore from './store/useEmployeesListStore.js'
 import useAuthStore from './store/useAuthStore.js'
 import {useTranslation} from 'react-i18next'
 
-const theme = createTheme({});
+export const lightTheme = createTheme({
+    palette: { mode: 'light' },
+    components: {
+        MuiButton: {
+            variants: [
+                {
+                    props: { variant: 'action' },
+                    style: {
+                        backgroundColor: '#4caf50',
+                        color: '#fff',
+                        fontWeight: 700,
+                        height: 40,
+                        '&:hover': { backgroundColor: '#388e3c' },
+                    },
+                },
+                {
+                    props: { variant: 'action.outlined' },
+                    style: {
+                        color: '#4caf50',
+                        fontWeight: 700,
+                        height: 40,
+                        border: '2px solid #4caf50',
+                        '&:hover': { backgroundColor: '#e8f5e9' },
+                    },
+                },
+            ],
+        },
+    },
+});
+
+export const darkTheme = createTheme({
+    palette: { mode: 'dark' },
+    components: {
+        MuiButton: {
+            variants: [
+                {
+                    props: { variant: 'action' },
+                    style: {
+                        backgroundColor: '#388e3c',
+                        color: '#fff',
+                        fontWeight: 700,
+                        height: 40,
+                        '&:hover': { backgroundColor: '#2e7d32' },
+                    },
+                },
+                {
+                    props: { variant: 'action.outlined' },
+                    style: {
+                        backgroundColor: 'transparent',
+                        color: '#81c784',
+                        fontWeight: 700,
+                        height: 40,
+                        border: '2px solid #81c784',
+                        '&:hover': { backgroundColor: '#2e7d3233' },
+                    },
+                },
+            ],
+        },
+    },
+});
+
 
 export default function App() {
     const {t} = useTranslation();
@@ -37,13 +98,14 @@ export default function App() {
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
     const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
         fetchMasters();
     }, [fetchMasters]);
 
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
             <CssBaseline/>
             <AppBar position="static" color="default" elevation={0}>
                 <Toolbar>
@@ -51,13 +113,18 @@ export default function App() {
                         {t('app.title')}
                     </Typography>
 
+                    <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }}>
+                        <Typography>ライト / ダーク</Typography>
+                        <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
+                    </Box>
+
                     <Box sx={{display: 'flex', gap: 2}}>
                         <Button id="basic-button"
                                 aria-controls={open ? 'basic-menu' : undefined}
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
                                 onClick={handleClick}
-                                variant="contained"
+                                variant="action"
                         >
                             {t('app.menu.dashboard')}
                         </Button>
@@ -92,7 +159,7 @@ export default function App() {
                         </Menu>
                         {isLoggedIn && (
                             <Button
-                                variant="contained"
+                                variant="action"
                                 onClick={() => {
                                     logout();
                                     navigate('/');
@@ -121,9 +188,9 @@ export default function App() {
                 open={snackbarOpen}
                 autoHideDuration={1000}
                 onClose={() => setSnackbarOpen(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
             >
-                <Alert onClose={() => setSnackbarOpen(false)} variant="filled"　severity="success" sx={{ width: '100%' }}>
+                <Alert onClose={() => setSnackbarOpen(false)} variant="filled" severity="success" sx={{width: '100%'}}>
                     ログアウトしました
                 </Alert>
             </Snackbar>

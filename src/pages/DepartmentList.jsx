@@ -82,9 +82,6 @@ function DepartmentList() {
         setSelectedId(null);
         handleCloseDialog();
 
-        //await addDepartment({name});
-        //handleCloseAddDialog();
-
     }
     const handleOpenDeleteDialog = (id) => {
         setSelectedId(id);
@@ -110,7 +107,7 @@ function DepartmentList() {
         <Box>
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                 <Typography variant="h5">{t('departmentList.title')}</Typography>
-                <Button variant="contained" onClick={handleOpenAddDialog}>
+                <Button variant="action" onClick={handleOpenAddDialog}>
                     {t('departmentList.addButton')}
                 </Button>
             </Box>

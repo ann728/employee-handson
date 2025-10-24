@@ -115,9 +115,9 @@ export default function EmployeeForm() {
                 <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                     <Typography variant="h5">{t('employeeForm.title')}</Typography>
                     <Box>
-                        <Button variant="outlined"
+                        <Button variant="action.outlined"
                                 onClick={() => navigate('/')}>{t('employeeForm.buttons.back')}</Button>
-                        <Button sx={{ml: 1}} type="submit" variant="contained">{t('employeeForm.buttons.save')}</Button>
+                        <Button sx={{ml: 1}} type="submit" variant="action">{t('employeeForm.buttons.save')}</Button>
                     </Box>
                 </Box>
                 <Grid container spacing={2}>

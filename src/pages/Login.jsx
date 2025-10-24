@@ -98,24 +98,13 @@ const Login = () => {
                         </Box>
                     )}
                     <Button
-                        variant="contained"
-                        color="primary"
+                        variant="action"
                         type="submit"
-                        size="large"
                         disabled={loading}
                     >
                         {loading ? 'ログイン中...' : 'ログイン'}
                     </Button>
 
-                    {/*<Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>*/}
-                    {/*    <Alert*/}
-                    {/*        onClose={() => setOpen(false)}*/}
-                    {/*        severity="success"*/}
-                    {/*        variant="filled"*/}
-                    {/*    >*/}
-                    {/*        ログインが完了しました*/}
-                    {/*    </Alert>*/}
-                    {/*</Snackbar>*/}
 
                 </Box>
             </Paper>
