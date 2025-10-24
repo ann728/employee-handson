@@ -29,6 +29,8 @@ const useAuthStore = create(
                     phone: userData.phone,
                     departmentId: userData.departmentId,
                     roleId: userData.roleId,
+                    loading: false,
+
 
                 }),
 
@@ -69,7 +71,7 @@ const useAuthStore = create(
                 }),
         }),
         {
-            name: 'user-storage',
+            name: 'user-storage'
         },
     )
 )

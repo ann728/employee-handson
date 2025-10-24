@@ -19,6 +19,10 @@ export const loginSchema = z.object({
 const Login = () => {
     const navigate = useNavigate();
     const {login, error, loading, isLoggedIn} = useAuthStore();
+    const [rehydrated, setRehydrated] = useState(false);
+
+    console.log('initial loading:', useAuthStore.getState().loading);
+    console.log('rehydrated:', rehydrated);
 
     const {
         register,
@@ -52,6 +56,17 @@ const Login = () => {
             navigate('/employees');
         }
     }, [isLoggedIn, navigate]);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => setRehydrated(true), 0);
+        return () => clearTimeout(timeout);
+    }, []);
+
+    useEffect(() => {
+        if (rehydrated) {
+            useAuthStore.setState({ loading: false });
+        }
+    }, [rehydrated]);
 
     return (
         <Container maxWidth="sm">
@@ -100,7 +115,7 @@ const Login = () => {
                     <Button
                         variant="action"
                         type="submit"
-                        disabled={loading}
+                        disabled={loading || !rehydrated}
                     >
                         {loading ? 'ログイン中...' : 'ログイン'}
                     </Button>
