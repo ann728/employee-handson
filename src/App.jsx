@@ -170,8 +170,6 @@ export default function App() {
                             </Button>
                         )}
                     </Box>
-                    {/*<Button variant="contained" onClick={() => navigate('/')}>ユーザー一覧</Button>*/}
-                    {/*<Button sx={{ ml: 1 }} variant="outlined" onClick={() => navigate('/new')}>ユーザーの作成</Button>*/}
                 </Toolbar>
             </AppBar>
             <Container sx={{mt: 3}}>

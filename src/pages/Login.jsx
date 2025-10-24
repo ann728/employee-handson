@@ -104,8 +104,6 @@ const Login = () => {
                     >
                         {loading ? 'ログイン中...' : 'ログイン'}
                     </Button>
-
-
                 </Box>
             </Paper>
         </Container>
