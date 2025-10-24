@@ -173,5 +173,4 @@
 
 - 参考：https://mui.com/material-ui/customization/theme-components/  
 - ライト／ダークテーマの切替を導入  
-- variant単位でボタンやカードなどの見た目を統一  
-- ユーザーが設定したテーマを `localStorage` に保存  
+- variant単位でボタンの見た目を統一  
