@@ -11,7 +11,7 @@ FROM nginx:stable-alpine
 # Node.js と npm を追加
 RUN apk add nodejs npm
 
-# json-server をグローバルインストール
+# json-server をインストール
 RUN npm install -g json-server
 
 # フロント静的ファイルをコピー
