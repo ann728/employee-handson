@@ -174,3 +174,15 @@
 - 参考：https://mui.com/material-ui/customization/theme-components/  
 - ライト／ダークテーマの切替を導入  
 - variant単位でボタンの見た目を統一  
+
+---
+
+## ◆◆追加機能②
+### ◆Miraへの載せ変え
+- 左メニュー
+- リスト画面はOrdersを参考に
+- フォーム画面はFormsの欄のパーツを使用（内部的にはreact-hook-formを優先）
+  - ページ構成はカード1枚にフォームパーツが縦並び
+  - ボタンはリストと同じく右上
+- ログアウトはユーザーアイコン→コンテクストメニュー
+- ログインはauth>sign inを参考
