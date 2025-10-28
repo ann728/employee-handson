@@ -62,7 +62,10 @@
     "department": "部署",
     "role": "権限",
     "actions": "アクション",
-    "noResults": "該当するユーザーが見つかりませんでした"
+    "noResults": "該当するユーザーが見つかりませんでした",
+    "pagination": {
+      "label": "ページあたりの行数"
+    }
   },
   "app": {
     "title": "社員名簿",

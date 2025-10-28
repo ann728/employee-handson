@@ -16,6 +16,7 @@ import {
     TableSortLabel,
     Snackbar,
     Alert,
+    TablePagination
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -87,7 +88,7 @@ function EmployeeList() {
     const [page, setPage] = useState(0);
 
     // 1ページの件数
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
     useEffect(() => {
         if (location.state?.showSnackbar) {
@@ -143,15 +144,6 @@ function EmployeeList() {
         if (reason === 'clickaway') return;
         setOpen(false);
     };
-
-    // const handleChangePage = (event, newPage) => {
-    //     setPage(newPage);
-    // };
-    //
-    // const handleChangeRowsPerPage = (event) => {
-    //     setRowsPerPage(parseInt(event.target.value, 10));
-    //     setPage(0);
-    // };
 
     //返された比較関数を使って実際に並べ替える
     const sortedRows = useMemo(() => {
@@ -243,26 +235,28 @@ function EmployeeList() {
                     </TableHead>
                     <TableBody>
                         {sortedRows.length > 0 ?
-                            (sortedRows.map((e) => (
-                                    <TableRow key={e.id} hover>
-                                        <TableCell>
-                                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                                                <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
-                                                {e.name}
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell>{e.phone}</TableCell>
-                                        <TableCell>{e.department?.name}</TableCell>
-                                        <TableCell>{e.role?.name}</TableCell>
-                                        <TableCell align="right">
-                                            <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
-                                                <EditIcon/>
-                                            </IconButton>
-                                            <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
-                                                <DeleteIcon/>
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>))
+                            (sortedRows
+                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    .map((e) => (
+                                        <TableRow key={e.id} hover>
+                                            <TableCell>
+                                                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                                    <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
+                                                    {e.name}
+                                                </Box>
+                                            </TableCell>
+                                            <TableCell>{e.phone}</TableCell>
+                                            <TableCell>{e.department?.name}</TableCell>
+                                            <TableCell>{e.role?.name}</TableCell>
+                                            <TableCell align="right">
+                                                <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
+                                                    <EditIcon/>
+                                                </IconButton>
+                                                <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
+                                                    <DeleteIcon/>
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>))
                             ) : (
                                 <TableRow>
                                     <TableCell colSpan={5} align="center">
@@ -275,6 +269,21 @@ function EmployeeList() {
                 </Table>
             </TableContainer>
 
+            <TablePagination
+                component="div"
+                count={sortedRows.length}
+                page={page}
+                onPageChange={(event, newPage) => setPage(newPage)}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={(event) => {
+                    setRowsPerPage(parseInt(event.target.value, 10));
+                    setPage(0);
+                }}
+                rowsPerPageOptions={[5, 10, 20]}
+                labelRowsPerPage={t('employeeList.pagination.label')}
+            />
+
+F
             <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}
                       anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
                 <Alert onClose={handleClose} severity="success" variant="filled">
