@@ -18,7 +18,7 @@ import {
     Breadcrumbs as MuiBreadcrumbs,
     Divider as MuiDivider,
     Paper as MuiPaper,
-    Card as MuiCard, Toolbar,
+    Card as MuiCard, Toolbar, TablePagination,
 
 
 } from '@mui/material';
@@ -103,6 +103,9 @@ function EnhancedTable({openDialog, onCloseDialog, onOpenDialog}) {
     const [selectedId, setSelectedId] = useState(null);
 
     const {isLoggedIn} = useAuthStore();
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     //ログインしていない場合ログイン画面へリダイレクト
     useEffect(() => {
@@ -200,24 +203,41 @@ function EnhancedTable({openDialog, onCloseDialog, onOpenDialog}) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {departments.map((department) => {
-                            return (
-                                <TableRow key={department.id} hover>
-                                    <TableCell>{department.name}</TableCell>
-                                    <TableCell align="right">
-                                        <IconButton color="primary" onClick={() => handleOpenEditDialog(department)}>
-                                            <EditIcon/>
-                                        </IconButton>
-                                        <IconButton color="error" onClick={() => handleOpenDeleteDialog(department.id)}>
-                                            <DeleteIcon/>
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                        {departments
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((department) => {
+                                return (
+                                    <TableRow key={department.id} hover>
+                                        <TableCell>{department.name}</TableCell>
+                                        <TableCell align="right">
+                                            <IconButton color="primary"
+                                                        onClick={() => handleOpenEditDialog(department)}>
+                                                <EditIcon/>
+                                            </IconButton>
+                                            <IconButton color="error"
+                                                        onClick={() => handleOpenDeleteDialog(department.id)}>
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                component="div"
+                count={departments.length}
+                page={page}
+                onPageChange={(event, newPage) => setPage(newPage)}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={(event) => {
+                    setRowsPerPage(parseInt(event.target.value, 10));
+                    setPage(0);
+                }}
+                rowsPerPageOptions={[5, 10, 20]}
+                labelRowsPerPage={t('employeeList.pagination.label')}
+            />
 
             <Dialog open={openDialog} onClose={onCloseDialog} sx={{'& .MuiDialog-paper': {p: 2}}}>
                 <DialogTitle id="form-dialog-title">
