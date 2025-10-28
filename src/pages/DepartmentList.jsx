@@ -147,7 +147,7 @@ function DepartmentList() {
             </TableContainer>
 
             <Dialog open={openDialog} onClose={handleCloseDialog} sx={{'& .MuiDialog-paper': {p: 2}}}>
-                <DialogTitle>
+                <DialogTitle id="form-dialog-title">
                     {selectedId === null
                         ? t('departmentList.dialogTitle')
                         : t('departmentList.editDialogTitle')}
@@ -155,9 +155,10 @@ function DepartmentList() {
                 <DialogContent>
                     <TextField
                         fullWidth
+                        autoFocus
                         margin="dense"
                         label={t('departmentList.labelName')}
-                        value={name}
+                        value={name}a
                         error={!!error}
                         helperText={error || ''}
                         onChange={(e) => {
@@ -166,8 +167,8 @@ function DepartmentList() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseDialog}>{t('departmentList.cancel')}</Button>
-                    <Button variant="contained" onClick={handleSave}>
+                    <Button color="primary" onClick={handleCloseDialog}>{t('departmentList.cancel')}</Button>
+                    <Button color="primary" onClick={handleSave}>
                         {t('departmentList.save')}
                     </Button>
                 </DialogActions>
