@@ -33,6 +33,10 @@ const routes = [
                 path: "new",
                 element: <EmployeeForm />,
             },
+            {
+                path: "edit/:id",
+                element: <EmployeeForm />,
+            }
         ],
     },
 ];
