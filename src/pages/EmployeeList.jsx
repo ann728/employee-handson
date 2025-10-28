@@ -120,7 +120,7 @@ const EnhancedTableToolbar = (props) => {
                     </Typography>
                 ) : (
                     <Typography variant="h6" id="tableTitle">
-                        Orders
+                        ユーザー一覧
                     </Typography>
                 )}
             </ToolbarTitle>
@@ -439,18 +439,18 @@ function EmployeeList() {
     return (
         <>
             <React.Fragment>
-                <Helmet title="従業員一覧"/>
+                <Helmet title="社員一覧"/>
                 <Grid justifyContent="space-between" container spacing={10}>
                     <Grid>
                         <Typography variant="h3" gutterBottom display="inline">
-                            従業員一覧
+                            社員一覧
                         </Typography>
 
                         <Breadcrumbs aria-label="Breadcrumb" mt={2}>
                             <Link component={NavLink} to="/">
                                 社員管理
                             </Link>
-                            <Typography>従業員一覧</Typography>
+                            <Typography>社員一覧</Typography>
                         </Breadcrumbs>
                     </Grid>
                     <Grid>

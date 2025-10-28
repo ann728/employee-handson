@@ -6,8 +6,8 @@ import { green } from "@mui/material/colors";
 
 import { Box, Chip, Drawer as MuiDrawer, ListItemButton } from "@mui/material";
 
-import Logo from "@/vendor/logo.svg";
-
+// import Logo from "@/vendor/logo.svg";
+import { ReactComponent as Logo } from "@/vendor/logo.svg";
 //import Footer from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";
 
@@ -72,7 +72,7 @@ const Sidebar = ({ items, showFooter = true, ...rest }) => {
             <Brand component={NavLink} to="/">
                 <BrandIcon />{" "}
                 <Box ml={1}>
-                    従業員管理アプリ<BrandChip label="PRO" />
+                    社員管理アプリ<BrandChip label="PRO" />
                 </Box>
             </Brand>
             <SidebarNav items={items} />

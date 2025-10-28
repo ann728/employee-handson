@@ -6,7 +6,7 @@ const dashboardItems = [
         pages: [
             {
                 href: "/employees",
-                title: "従業員一覧",
+                title: "社員一覧",
                 icon: Users,
             },
             {

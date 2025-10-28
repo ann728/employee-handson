@@ -1,5 +1,18 @@
 import React, {useEffect, useMemo, useState, useCallback} from 'react'
-import {Box, Button, Grid, MenuItem, Paper, TextField, Typography} from '@mui/material'
+import {
+    Box,
+    Button,
+    Grid,
+    MenuItem,
+    Typography,
+    Divider as MuiDivider,
+    Paper as MuiPaper,
+    TextField as MuiTextField,
+    Breadcrumbs as MuiBreadcrumbs,
+    Link,
+
+} from '@mui/material'
+import {spacing} from "@mui/system";
 import {useNavigate, useParams} from 'react-router-dom'
 import useEmployeesListStore from '../store/useEmployeesListStore.js'
 import useEmployeeDetailStore from '../store/useEmployeeDetailStore.js'
@@ -8,9 +21,21 @@ import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from 'zod';
 import {useTranslation} from 'react-i18next';
+import styled from "@emotion/styled";
+import {NavLink} from "react-router-dom";
+import {Helmet} from "react-helmet-async";
+
+const Divider = styled(MuiDivider)(spacing);
+const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
+const Paper = styled(MuiPaper)(spacing);
+const TextFieldSpacing = styled(MuiTextField)(spacing);
+
+const TextField = styled(TextFieldSpacing)`
+    width: 100%;
+`;
 
 
-const initial = {id: undefined, email: '', name: '', phone: '', departmentId: '', roleId: ''}
+const initial = {id: undefined, email: '', name: '', phone: '', departmentId: '', roleId: '', password: ''}
 
 export function useEmployeeSchema(isNew) {
     const {t} = useTranslation();
@@ -34,7 +59,7 @@ export function useEmployeeSchema(isNew) {
     });
 }
 
-export default function EmployeeForm() {
+function TextFields({ onSubmitRef }) {
 
     const {t} = useTranslation();
     const navigate = useNavigate()
@@ -69,7 +94,7 @@ export default function EmployeeForm() {
                     phone: data.phone,
                     departmentId: data.departmentId != null ? String(data.departmentId) : '',
                     roleId: data.roleId != null ? String(data.roleId) : '',
-                    password: undefined,
+                    password: '',
 
                 });
             } else {
@@ -105,135 +130,203 @@ export default function EmployeeForm() {
 
         const result = await saveEmployee(payload);
         if (result) {
-            navigate('/');
+            // navigate('/');
+            navigate('/employees', { state: { showSnackbar: true, message: 'ユーザーを保存しました。' } });
         }
     };
 
+    useEffect(() => {
+        if (onSubmitRef) {
+            onSubmitRef.current = handleSubmit(onSubmit);
+        }
+    }, [handleSubmit, onSubmit, onSubmitRef]);
+
     return (
         <>
-            <Paper sx={{p: 3}} component="form" onSubmit={handleSubmit(onSubmit)}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                    <Typography variant="h5">{t('employeeForm.title')}</Typography>
-                    <Box>
-                        <Button variant="action.outlined"
-                                onClick={() => navigate('/')}>{t('employeeForm.buttons.back')}</Button>
-                        <Button sx={{ml: 1}} type="submit" variant="action">{t('employeeForm.buttons.save')}</Button>
-                    </Box>
-                </Box>
-                <Grid container spacing={2}>
+            {/*<Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>*/}
+            {/*    <Typography variant="h5">{t('employeeForm.title')}</Typography>*/}
+            {/*    <Box>*/}
+            {/*        <Button variant="contained" color="secondary"*/}
+            {/*                onClick={() => navigate('/')}>{t('employeeForm.buttons.back')}</Button>*/}
+            {/*        <Button sx={{ml: 1}} type="submit" variant="contained">{t('employeeForm.buttons.save')}</Button>*/}
+            {/*    </Box>*/}
+            {/*</Box>*/}
 
-                    <Grid item xs={12}>
-                        <Controller
-                            name="name"
-                            control={control}
-                            render={({field}) => (
-                                <TextField
-                                    {...field}
-                                    fullWidth
-                                    label={t('employeeForm.labels.name')}
-                                    // required
-                                    error={!!errors.name}
-                                    helperText={errors.name?.message}
-                                />)}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Controller
-                            name="email"
-                            control={control}
-                            render={({field}) => (
-                                <TextField
-                                    {...field}
-                                    fullWidth
-                                    label={t('employeeForm.labels.email')}
-                                    error={!!errors.email}
-                                    helperText={errors.email?.message}
-                                />
-                            )}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Controller
-                            name="phone"
-                            control={control}
-                            render={({field}) => (<TextField
+            <Paper
+                sx={{
+                    p: 4,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 3
+                }}
+                component="form"
+                onSubmit={handleSubmit(onSubmit)}
+            >
+
+
+                {/*<Grid container spacing={2}>*/}
+
+                <Grid item xs={12}>
+                    <Controller
+                        name="name"
+                        control={control}
+                        render={({field}) => (
+                            <TextField
                                 {...field}
                                 fullWidth
-                                label={t('employeeForm.labels.phone')}
-
+                                label={t('employeeForm.labels.name')}
                                 // required
-                                error={!!errors.phone}
-                                helperText={errors.phone?.message}
-                                onChange={(e) => {
-                                    const formattedValue = e.target.value.replace(/[-\s]/g, '');
-                                    field.onChange(formattedValue);
-                                }}
+                                error={!!errors.name}
+                                helperText={errors.name?.message}
                             />)}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Controller
-                            name="departmentId"
-                            control={control}
-                            render={({field}) => (<TextField
-                                {...field}
-                                select
-                                fullWidth
-                                label={t('employeeForm.labels.department')}
-                                // required
-                                error={!!errors.departmentId}
-                                helperText={errors.departmentId?.message}
-                            >
-                                <MenuItem value="">
-                                    <em>{t('employeeForm.placeholders.select')}</em>
-                                </MenuItem>
-                                {departments.map((d) => (
-                                    <MenuItem key={d.id} value={d.id.toString()}>{d.name}</MenuItem>))}
-                            </TextField>)}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Controller
-                            name="roleId"
-                            control={control}
-                            render={({field}) => (<TextField
-                                {...field}
-                                select
-                                fullWidth
-                                label={t('employeeForm.labels.role')}
-                                // required
-                                error={!!errors.roleId}
-                                helperText={errors.roleId?.message}
-                            >
-                                <MenuItem value="">
-                                    <em>{t('employeeForm.placeholders.select')}</em>
-                                </MenuItem>
-                                {roles.map((r) => (
-                                    <MenuItem key={r.id} value={r.id.toString()}>{r.name}</MenuItem>))}
-                            </TextField>)}
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Controller
-                            name="password"
-                            control={control}
-                            render={({field}) => (
-                                <TextField
-                                    {...field}
-                                    type="password"
-                                    fullWidth
-                                    label={t('employeeForm.labels.password')}
-                                    error={!!errors.password}
-                                    helperText={id
-                                        ? t('employeeForm.helper.passwordUpdate')
-                                        : errors.password?.message
-                                    }
-
-                                />
-                            )}
-                        />
-                    </Grid>
+                    />
                 </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="email"
+                        control={control}
+                        render={({field}) => (
+                            <TextField
+                                {...field}
+                                fullWidth
+                                label={t('employeeForm.labels.email')}
+                                error={!!errors.email}
+                                helperText={errors.email?.message}
+                            />
+                        )}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="phone"
+                        control={control}
+                        render={({field}) => (<TextField
+                            {...field}
+                            fullWidth
+                            label={t('employeeForm.labels.phone')}
+
+                            // required
+                            error={!!errors.phone}
+                            helperText={errors.phone?.message}
+                            onChange={(e) => {
+                                const formattedValue = e.target.value.replace(/[-\s]/g, '');
+                                field.onChange(formattedValue);
+                            }}
+                        />)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="departmentId"
+                        control={control}
+                        render={({field}) => (<TextField
+                            {...field}
+                            select
+                            fullWidth
+                            label={t('employeeForm.labels.department')}
+                            // required
+                            error={!!errors.departmentId}
+                            helperText={errors.departmentId?.message}
+                        >
+                            <MenuItem value="">
+                                <em>{t('employeeForm.placeholders.select')}</em>
+                            </MenuItem>
+                            {departments.map((d) => (
+                                <MenuItem key={d.id} value={d.id.toString()}>{d.name}</MenuItem>))}
+                        </TextField>)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="roleId"
+                        control={control}
+                        render={({field}) => (<TextField
+                            {...field}
+                            select
+                            fullWidth
+                            label={t('employeeForm.labels.role')}
+                            // required
+                            error={!!errors.roleId}
+                            helperText={errors.roleId?.message}
+                        >
+                            <MenuItem value="">
+                                <em>{t('employeeForm.placeholders.select')}</em>
+                            </MenuItem>
+                            {roles.map((r) => (
+                                <MenuItem key={r.id} value={r.id.toString()}>{r.name}</MenuItem>))}
+                        </TextField>)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Controller
+                        name="password"
+                        control={control}
+                        render={({field}) => (
+                            <TextField
+                                {...field}
+                                type="password"
+                                fullWidth
+                                label={t('employeeForm.labels.password')}
+                                error={!!errors.password}
+                                helperText={id
+                                    ? t('employeeForm.helper.passwordUpdate')
+                                    : errors.password?.message
+                                }
+
+                            />
+                        )}
+                    />
+                </Grid>
+                {/*</Grid>*/}
             </Paper>
         </>)
 }
+
+function EmployeeForm() {
+    const {t} = useTranslation();
+    const navigate = useNavigate();
+    const onSubmitRef = React.useRef(null);
+
+    return (
+
+        <React.Fragment>
+            <Grid justifyContent="space-between" container spacing={10}>
+                <Helmet title="ユーザー設定"/>
+                <Grid>
+                    <Typography variant="h3" gutterBottom display="inline">
+                        ユーザー設定
+                    </Typography>
+                    <Breadcrumbs aria-label="Breadcrumb" mt={2}>
+                        <Link component={NavLink} to="/">
+                            社員管理
+                        </Link>
+                        <Link component={NavLink} to="/">
+                            社員一覧
+                        </Link>
+                        <Typography>ユーザー設定</Typography>
+                    </Breadcrumbs>
+                </Grid>
+                <Grid>
+                    {/*<Typography variant="h5">{t('employeeForm.title')}</Typography>*/}
+                    <Box>
+                        <Button variant="contained" color="secondary"
+                                onClick={() => navigate('/employees')}>{t('employeeForm.buttons.back')}</Button>
+                        <Button sx={{ml: 1}} type="submit" variant="contained"
+                                onClick={() => onSubmitRef.current && onSubmitRef.current()}>
+                            {t('employeeForm.buttons.save')}
+                        </Button>
+                    </Box>
+                </Grid>
+            </Grid>
+
+            <Divider my={6}/>
+            <Grid container spacing={6}>
+                <Grid size={12}>
+                    <TextFields onSubmitRef={onSubmitRef}/>
+                </Grid>
+            </Grid>
+        </React.Fragment>
+    );
+}
+
+export default EmployeeForm;
