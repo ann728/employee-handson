@@ -16,8 +16,21 @@ import {
     TableSortLabel,
     Snackbar,
     Alert,
-    TablePagination
+    TablePagination,
+    Divider as MuiDivider,
+    Breadcrumbs as MuiBreadcrumbs,
+    Grid,
+    Link,
+    Chip as MuiChip,
+    Tooltip,
+    Toolbar
 } from '@mui/material';
+import {
+    Add as AddIcon,
+    Archive as ArchiveIcon,
+    FilterList as FilterListIcon,
+    RemoveRedEye as RemoveRedEyeIcon,
+} from "@mui/icons-material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useNavigate, useLocation} from 'react-router-dom';
@@ -25,6 +38,33 @@ import useEmployeesListStore from '../store/useEmployeesListStore.js';
 import useAuthStore from '../store/useAuthStore.js'
 import DeleteDialog from '../components/dialogs/DeleteDialog';
 import {useTranslation} from 'react-i18next';
+
+//import {Add as AddIcon} from "@mui/icons-material";
+import {spacing} from "@mui/system";
+import {NavLink} from "react-router-dom";
+import {Helmet} from "react-helmet-async";
+import styled from "@emotion/styled";
+import { green, orange, red } from "@mui/material/colors";
+
+const Divider = styled(MuiDivider)(spacing);
+const Breadcrumbs = styled(MuiBreadcrumbs)(spacing);
+
+const Chip = styled(MuiChip)`
+    ${spacing};
+
+    background: ${(props) => props.shipped && green[500]};
+    background: ${(props) => props.processing && orange[700]};
+    background: ${(props) => props.cancelled && red[500]};
+    color: ${(props) => props.theme.palette.common.white};
+`;
+
+const Spacer = styled.div`
+    flex: 1 1 100%;
+`;
+
+const ToolbarTitle = styled.div`
+    min-width: 150px;
+`;
 
 // const Transition = forwardRef(function Transition(props, ref) {
 //     return <Slide direction="up" ref={ref} {...props} />;
@@ -67,7 +107,44 @@ function getComparator(order, orderBy) {
         : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function EmployeeList() {
+const EnhancedTableToolbar = (props) => {
+    // Here was 'let'
+    const {numSelected} = props;
+
+    return (
+        <Toolbar>
+            <ToolbarTitle>
+                {numSelected > 0 ? (
+                    <Typography color="inherit" variant="subtitle1">
+                        {numSelected} selected
+                    </Typography>
+                ) : (
+                    <Typography variant="h6" id="tableTitle">
+                        Orders
+                    </Typography>
+                )}
+            </ToolbarTitle>
+            <Spacer/>
+            {/*<div>*/}
+            {/*    {numSelected > 0 ? (*/}
+            {/*        <Tooltip title="Delete">*/}
+            {/*            <IconButton aria-label="Delete" size="large">*/}
+            {/*                <ArchiveIcon/>*/}
+            {/*            </IconButton>*/}
+            {/*        </Tooltip>*/}
+            {/*    ) : (*/}
+            {/*        <Tooltip title="Filter list">*/}
+            {/*            <IconButton aria-label="Filter list" size="large">*/}
+            {/*                <FilterListIcon/>*/}
+            {/*            </IconButton>*/}
+            {/*        </Tooltip>*/}
+            {/*    )}*/}
+            {/*</div>*/}
+        </Toolbar>
+    );
+};
+
+function EnhancedTable() {
     const {t} = useTranslation();
     const navigate = useNavigate();
     const {employees, fetchEmployees, deleteEmployee} = useEmployeesListStore();
@@ -89,6 +166,38 @@ function EmployeeList() {
 
     // 1ページの件数
     const [rowsPerPage, setRowsPerPage] = useState(5);
+
+    // const [selected, setSelected] = React.useState([]);
+
+    // const handleSelectAllClick = (event) => {
+    //     if (event.target.checked) {
+    //         const newSelecteds = rows.map((n) => n.id);
+    //         setSelected(newSelecteds);
+    //         return;
+    //     }
+    //     setSelected([]);
+    // };
+    //
+    // const handleClick = (event, id) => {
+    //     const selectedIndex = selected.indexOf(id);
+    //     let newSelected = [];
+    //
+    //     if (selectedIndex === -1) {
+    //         newSelected = newSelected.concat(selected, id);
+    //     } else if (selectedIndex === 0) {
+    //         newSelected = newSelected.concat(selected.slice(1));
+    //     } else if (selectedIndex === selected.length - 1) {
+    //         newSelected = newSelected.concat(selected.slice(0, -1));
+    //     } else if (selectedIndex > 0) {
+    //         newSelected = newSelected.concat(
+    //             selected.slice(0, selectedIndex),
+    //             selected.slice(selectedIndex + 1)
+    //         );
+    //     }
+    //
+    //     setSelected(newSelected);
+    // };
+    // const isSelected = (id) => selected.indexOf(id) !== -1;
 
     useEffect(() => {
         if (location.state?.showSnackbar) {
@@ -172,12 +281,12 @@ function EmployeeList() {
 
     return (
         <Box>
-            <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                <Typography variant="h5">{t('employeeList.title')}</Typography>
-                <Button variant="action" onClick={() => navigate('/new')}>
-                    {t('employeeList.create')}
-                </Button>
-            </Box>
+            {/*<Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>*/}
+            {/*    <Typography variant="h5">{t('employeeList.title')}</Typography>*/}
+            {/*    <Button variant="action" onClick={() => navigate('/new')}>*/}
+            {/*        {t('employeeList.create')}*/}
+            {/*    </Button>*/}
+            {/*</Box>*/}
 
             <TextField
                 fullWidth
@@ -188,6 +297,8 @@ function EmployeeList() {
                 sx={{mb: 2}}
             />
 
+            {/*<EnhancedTableToolbar numSelected={selected.length}/>*/}
+            <EnhancedTableToolbar/>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
@@ -247,7 +358,28 @@ function EmployeeList() {
                                             </TableCell>
                                             <TableCell>{e.phone}</TableCell>
                                             <TableCell>{e.department?.name}</TableCell>
-                                            <TableCell>{e.role?.name}</TableCell>
+                                            <TableCell>
+                                                {/*{e.role?.name}*/}
+                                                {e.role?.name === "管理者"&& (
+                                                    <Chip
+                                                        size="small"
+                                                        mr={1}
+                                                        mb={1}
+                                                        label="管理者"
+                                                        shipped={+true}
+                                                    />
+                                                )}
+                                                {e.role?.name === "一般" && (
+                                                    <Chip
+                                                        size="small"
+                                                        mr={1}
+                                                        mb={1}
+                                                        label="一般"
+                                                        processing={+true}
+                                                    />
+                                                )}
+
+                                            </TableCell>
                                             <TableCell align="right">
                                                 <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
                                                     <EditIcon/>
@@ -283,7 +415,7 @@ function EmployeeList() {
                 labelRowsPerPage={t('employeeList.pagination.label')}
             />
 
-F
+
             <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}
                       anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
                 <Alert onClose={handleClose} severity="success" variant="filled">
@@ -296,7 +428,49 @@ F
                 onClose={() => setOpenDialog(false)}
                 onDelete={handleDelete}
             />
-        </Box>);
+        </Box>
+    );
+}
+
+function EmployeeList() {
+
+    const navigate = useNavigate();
+
+    return (
+        <>
+            <React.Fragment>
+                <Helmet title="従業員一覧"/>
+                <Grid justifyContent="space-between" container spacing={10}>
+                    <Grid>
+                        <Typography variant="h3" gutterBottom display="inline">
+                            従業員一覧
+                        </Typography>
+
+                        <Breadcrumbs aria-label="Breadcrumb" mt={2}>
+                            <Link component={NavLink} to="/">
+                                社員管理
+                            </Link>
+                            <Typography>従業員一覧</Typography>
+                        </Breadcrumbs>
+                    </Grid>
+                    <Grid>
+                        <Button variant="contained" color="primary" onClick={() => navigate('/new')}>
+                            <AddIcon/>
+                            ユーザーの作成
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <Divider my={6}/>
+
+                <Grid container spacing={6}>
+                    <Grid size={12}>
+                        <EnhancedTable/>
+                    </Grid>
+                </Grid>
+            </React.Fragment>
+        </>
+    );
 }
 
 export default EmployeeList;

@@ -1,5 +1,5 @@
 import React from "react";
-import {Routes, Route, useNavigate} from "react-router-dom";
+import {Routes, Route, useNavigate, useRoutes} from "react-router-dom";
 import {
     CssBaseline,
     Container,
@@ -18,51 +18,57 @@ import Login from "./pages/Login";
 import useAuthStore from "./store/useAuthStore";
 import {ThemeProvider} from "@mui/material/styles";
 import createTheme from "@/theme";
+import routes from "@/routes";
+import {HelmetProvider} from "react-helmet-async";
 
 
 export default function App() {
     const navigate = useNavigate();
     const {isLoggedIn, logout} = useAuthStore();
     const theme = createTheme("DARK");
+    const content = useRoutes(routes);
 
     return (
         <>
-            <ThemeProvider theme={theme}>
-                <CssBaseline/>
-                <Box sx={{display: "flex"}}>
-                    <Sidebar items={dashboardItems}/>
+            <HelmetProvider>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline/>
+                    {content}
+                    {/*<Box sx={{display: "flex"}}>*/}
+                    {/*    <Sidebar items={dashboardItems}/>*/}
 
-                    <Box sx={{flexGrow: 1}}>
-                        <AppBar position="static" color="default" elevation={0}>
-                            <Toolbar>
-                                <Typography variant="h6" sx={{flexGrow: 1}}>
-                                    従業員管理アプリ
-                                </Typography>
-                                {isLoggedIn && (
-                                    <Button
-                                        variant="contained"
-                                        onClick={() => {
-                                            logout();
-                                            navigate("/");
-                                        }}
-                                    >
-                                        ログアウト
-                                    </Button>
-                                )}
-                            </Toolbar>
-                        </AppBar>
+                    {/*    <Box sx={{flexGrow: 1}}>*/}
+                    {/*        <AppBar position="static" color="default" elevation={0}>*/}
+                    {/*            <Toolbar>*/}
+                    {/*                <Typography variant="h6" sx={{flexGrow: 1}}>*/}
+                    {/*                    従業員管理アプリ*/}
+                    {/*                </Typography>*/}
+                    {/*                {isLoggedIn && (*/}
+                    {/*                    <Button*/}
+                    {/*                        variant="contained"*/}
+                    {/*                        onClick={() => {*/}
+                    {/*                            logout();*/}
+                    {/*                            navigate("/");*/}
+                    {/*                        }}*/}
+                    {/*                    >*/}
+                    {/*                        ログアウト*/}
+                    {/*                    </Button>*/}
+                    {/*                )}*/}
+                    {/*            </Toolbar>*/}
+                    {/*        </AppBar>*/}
 
-                        <Container sx={{mt: 3}}>
-                            <Routes>
-                                <Route path="/" element={<Login/>}/>
-                                <Route path="/employees" element={<EmployeeList/>}/>
-                                <Route path="/departments" element={<DepartmentList/>}/>
-                                <Route path="/new" element={<EmployeeForm/>}/>
-                            </Routes>
-                        </Container>
-                    </Box>
-                </Box>
-            </ThemeProvider>
+                    {/*        <Container sx={{mt: 3}}>*/}
+                    {/*            <Routes>*/}
+                    {/*                <Route path="/" element={<Login/>}/>*/}
+                    {/*                <Route path="/employees" element={<EmployeeList/>}/>*/}
+                    {/*                <Route path="/departments" element={<DepartmentList/>}/>*/}
+                    {/*                <Route path="/new" element={<EmployeeForm/>}/>*/}
+                    {/*            </Routes>*/}
+                    {/*        </Container>*/}
+                    {/*    </Box>*/}
+                    {/*</Box>*/}
+                </ThemeProvider>
+            </HelmetProvider>
         </>
     );
 }
