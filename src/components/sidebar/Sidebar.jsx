@@ -6,7 +6,8 @@ import { green } from "@mui/material/colors";
 
 import { Box, Chip, Drawer as MuiDrawer, ListItemButton } from "@mui/material";
 
-//import { ReactComponent as Logo } from "@/vendor/logo.svg";
+import Logo from "@/vendor/logo.svg";
+
 //import Footer from "./SidebarFooter";
 import SidebarNav from "./SidebarNav";
 
@@ -40,14 +41,14 @@ const Brand = styled(ListItemButton)`
     background-color: ${(props) => props.theme.sidebar.header.background};
   }
 `;
-//
-// const BrandIcon = styled(Logo)`
-//   margin-right: ${(props) => props.theme.spacing(2)};
-//   color: ${(props) => props.theme.sidebar.header.brand.color};
-//   fill: ${(props) => props.theme.sidebar.header.brand.color};
-//   width: 32px;
-//   height: 32px;
-// `;
+
+const BrandIcon = styled(Logo)`
+  margin-right: ${(props) => props.theme.spacing(2)};
+  color: ${(props) => props.theme.sidebar.header.brand.color};
+  fill: ${(props) => props.theme.sidebar.header.brand.color};
+  width: 32px;
+  height: 32px;
+`;
 
 const BrandChip = styled(Chip)`
   background-color: ${green[700]};
@@ -69,7 +70,7 @@ const Sidebar = ({ items, showFooter = true, ...rest }) => {
     return (
         <Drawer variant="permanent" {...rest}>
             <Brand component={NavLink} to="/">
-                {/*<BrandIcon />{" "}*/}
+                <BrandIcon />{" "}
                 <Box ml={1}>
                     従業員管理アプリ<BrandChip label="PRO" />
                 </Box>

@@ -2,7 +2,7 @@ import { Users, Building, Layout } from "lucide-react";
 
 const dashboardItems = [
     {
-        title: "Pages",
+        title: "社員管理",
         pages: [
             {
                 href: "/employees",

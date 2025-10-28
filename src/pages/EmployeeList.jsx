@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useNavigate,useLocation} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import useEmployeesListStore from '../store/useEmployeesListStore.js';
 import useAuthStore from '../store/useAuthStore.js'
 import DeleteDialog from '../components/dialogs/DeleteDialog';
@@ -83,6 +83,12 @@ function EmployeeList() {
     const [open, setOpen] = useState(false);
     const [message, setMessage] = useState('');
 
+    // 現在のページ番号
+    const [page, setPage] = useState(0);
+
+    // 1ページの件数
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
     useEffect(() => {
         if (location.state?.showSnackbar) {
             setMessage(location.state.message || '');
@@ -137,6 +143,15 @@ function EmployeeList() {
         if (reason === 'clickaway') return;
         setOpen(false);
     };
+
+    // const handleChangePage = (event, newPage) => {
+    //     setPage(newPage);
+    // };
+    //
+    // const handleChangeRowsPerPage = (event) => {
+    //     setRowsPerPage(parseInt(event.target.value, 10));
+    //     setPage(0);
+    // };
 
     //返された比較関数を使って実際に並べ替える
     const sortedRows = useMemo(() => {
@@ -229,38 +244,39 @@ function EmployeeList() {
                     <TableBody>
                         {sortedRows.length > 0 ?
                             (sortedRows.map((e) => (
-                            <TableRow key={e.id} hover>
-                                <TableCell>
-                                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                                        <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
-                                        {e.name}
-                                    </Box>
-                                </TableCell>
-                                <TableCell>{e.phone}</TableCell>
-                                <TableCell>{e.department?.name}</TableCell>
-                                <TableCell>{e.role?.name}</TableCell>
-                                <TableCell align="right">
-                                    <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
-                                        <EditIcon/>
-                                    </IconButton>
-                                    <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
-                                        <DeleteIcon/>
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>))
-                        ):(
-                            <TableRow>
-                                <TableCell colSpan={5} align="center">
-                                    {t('employeeList.noResults')}
-                                </TableCell>
-                            </TableRow>
-                        )}
+                                    <TableRow key={e.id} hover>
+                                        <TableCell>
+                                            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                                                <Avatar>{e.name?.[0]?.toUpperCase()}</Avatar>
+                                                {e.name}
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell>{e.phone}</TableCell>
+                                        <TableCell>{e.department?.name}</TableCell>
+                                        <TableCell>{e.role?.name}</TableCell>
+                                        <TableCell align="right">
+                                            <IconButton color="primary" onClick={() => navigate(`/edit/${e.id}`)}>
+                                                <EditIcon/>
+                                            </IconButton>
+                                            <IconButton color="error" onClick={() => handleOpenDialog(e.id)}>
+                                                <DeleteIcon/>
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        {t('employeeList.noResults')}
+                                    </TableCell>
+                                </TableRow>
+                            )}
 
                     </TableBody>
                 </Table>
             </TableContainer>
 
-            <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+            <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}
+                      anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
                 <Alert onClose={handleClose} severity="success" variant="filled">
                     {message}
                 </Alert>
