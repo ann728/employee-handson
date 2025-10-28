@@ -36,6 +36,10 @@ const routes = [
             {
                 path: "edit/:id",
                 element: <EmployeeForm />,
+            },
+            {
+                path: "login",
+                element: <Login />,
             }
         ],
     },

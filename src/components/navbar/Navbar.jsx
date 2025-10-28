@@ -18,7 +18,7 @@ import { Menu as MenuIcon } from "@mui/icons-material";
 import NavbarNotificationsDropdown from "./NavbarNotificationsDropdown";
 import NavbarMessagesDropdown from "./NavbarMessagesDropdown";
 // import NavbarLanguagesDropdown from "./NavbarLanguagesDropdown";
-// import NavbarUserDropdown from "./NavbarUserDropdown";
+import NavbarUserDropdown from "./NavbarUserDropdown";
 
 const AppBar = styled(MuiAppBar)`
   background: ${(props) => props.theme.header.background};
@@ -107,7 +107,7 @@ const Navbar = ({ onDrawerToggle }) => {
               <NavbarMessagesDropdown />
               <NavbarNotificationsDropdown />
               {/*<NavbarLanguagesDropdown />*/}
-              {/*<NavbarUserDropdown />*/}
+              <NavbarUserDropdown />
             </Grid>
           </Grid>
         </Toolbar>
