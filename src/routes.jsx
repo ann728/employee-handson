@@ -5,6 +5,7 @@ import Login from "@/pages/Login";
 import EmployeeList from "@/pages/EmployeeList";
 import DepartmentList from "@/pages/DepartmentList";
 import EmployeeForm from "@/pages/EmployeeForm";
+import SignIn from "@/pages/SignIn";
 
 const routes = [
     // {
@@ -19,28 +20,29 @@ const routes = [
     // },
     {
         path: "/",
-        element: <DashboardLayout />,
+        element: <DashboardLayout/>,
         children: [
             {
                 path: "employees",
-                element: <EmployeeList />,
+                element: <EmployeeList/>,
             },
             {
                 path: "departments",
-                element: <DepartmentList />,
+                element: <DepartmentList/>,
             },
             {
                 path: "new",
-                element: <EmployeeForm />,
+                element: <EmployeeForm/>,
             },
             {
                 path: "edit/:id",
-                element: <EmployeeForm />,
+                element: <EmployeeForm/>,
             },
             {
-                path: "login",
-                element: <Login />,
-            }
+                path: "SignIn",
+                element: <SignIn/>,
+            },
+
         ],
     },
 ];

@@ -239,7 +239,13 @@ function EnhancedTable({openDialog, onCloseDialog, onOpenDialog}) {
                 labelRowsPerPage={t('employeeList.pagination.label')}
             />
 
-            <Dialog open={openDialog} onClose={onCloseDialog} sx={{'& .MuiDialog-paper': {p: 2}}}>
+            <Dialog
+                open={openDialog}
+                onClose={onCloseDialog}
+                // maxWidth="xs"
+                fullWidth
+                sx={{'& .MuiDialog-paper': {p: 2}}}
+            >
                 <DialogTitle id="form-dialog-title">
                     {selectedId === null
                         ? t('departmentList.dialogTitle')

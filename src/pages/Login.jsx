@@ -21,8 +21,8 @@ const Login = () => {
     const {login, error, loading, isLoggedIn} = useAuthStore();
     const [rehydrated, setRehydrated] = useState(false);
 
-    console.log('initial loading:', useAuthStore.getState().loading);
-    console.log('rehydrated:', rehydrated);
+    // console.log('initial loading:', useAuthStore.getState().loading);
+    // console.log('rehydrated:', rehydrated);
 
     const {
         register,

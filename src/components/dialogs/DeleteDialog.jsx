@@ -10,15 +10,20 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function DeleteDialog({open, onClose, onDelete}) {
     const { t } = useTranslation()
     return (
-        <Dialog open={open} onClose={onClose} sx={{'& .MuiDialog-paper': {p: 2}}}
-                slots={{transition: Transition}}>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            sx={{'& .MuiDialog-paper': {p: 2}}}
+            fullWidth
+            // slots={{transition: Transition}}
+        >
             <DialogContent>
                 <Alert severity="info" variant="outlined">
                     {t('deleteDialog.message')}
                 </Alert>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose} color="inherit">  {t('deleteDialog.cancel')}</Button>
+                <Button onClick={onClose}color="primary">  {t('deleteDialog.cancel')}</Button>
                 <Button onClick={onDelete} color="error" variant="contained" startIcon={<DeleteIcon/>}>
                     {t('deleteDialog.delete')}
                 </Button>
