@@ -94,10 +94,11 @@ function SignIn() {
     return (
 
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
-            {/*<Alert mt={3} mb={3} severity="info">*/}
-            {/*    Use <strong>demo@bootlab.io</strong> and{" "}*/}
-            {/*    <strong>unsafepassword</strong> to sign in*/}
-            {/*</Alert>*/}
+            <Alert mt={3} mb={3} severity="info">
+                <strong>test@example.com</strong> and{" "}
+                <strong>aaaa</strong><br/>
+                を使用してログインしてください。
+            </Alert>
             {error && (
                 <Alert mt={2} mb={3} severity="warning">
                     {error}
@@ -152,12 +153,12 @@ function SignIn() {
             >
                 ログイン
             </Button>
-            {/*<Centered>*/}
-            {/*    まだアカウントをお持ちではありませんか?{" "}*/}
-            {/*    <Link to="../sign-up" component={RouterLink}>*/}
-            {/*        新規登録*/}
-            {/*    </Link>*/}
-            {/*</Centered>*/}
+            <Centered>
+                まだアカウントをお持ちではありませんか?{" "}
+                <Link to="../sign-up" component={RouterLink}>
+                    新規登録
+                </Link>
+            </Centered>
         </form>
 
 

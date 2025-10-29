@@ -16,7 +16,7 @@ const BigAvatar = styled(Avatar)`
 function SignIn() {
     return (
         <React.Fragment>
-            <Helmet title="Sign In"/>
+            <Helmet title="ログイン"/>
             <BigAvatar alt="Lucy" src="/static/img/avatars/avatar-1.jpg"/>
 
             <Typography component="h1" variant="h3" align="center" gutterBottom>

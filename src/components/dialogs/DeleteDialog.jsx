@@ -23,7 +23,7 @@ export default function DeleteDialog({open, onClose, onDelete}) {
                 </Alert>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}color="primary">  {t('deleteDialog.cancel')}</Button>
+                <Button onClick={onClose} color="primary">  {t('deleteDialog.cancel')}</Button>
                 <Button onClick={onDelete} color="error" variant="contained" startIcon={<DeleteIcon/>}>
                     {t('deleteDialog.delete')}
                 </Button>

@@ -1,7 +1,7 @@
 import React from "react";
 import DashboardLayout from "@/layouts/Dashboard";
 import AuthLayout from "@/layouts/Auth";
-import Login from "@/pages/Login";
+//import Login from "@/pages/Login";
 import EmployeeList from "@/pages/EmployeeList";
 import DepartmentList from "@/pages/DepartmentList";
 import EmployeeForm from "@/pages/EmployeeForm";
@@ -38,11 +38,16 @@ const routes = [
                 path: "edit/:id",
                 element: <EmployeeForm/>,
             },
+        ],
+    },
+    {
+        path: "/",
+        element: <AuthLayout />,
+        children: [
             {
-                path: "SignIn",
-                element: <SignIn/>,
+                path: "signIn",
+                element: <SignIn />,
             },
-
         ],
     },
 ];

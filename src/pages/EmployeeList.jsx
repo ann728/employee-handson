@@ -165,7 +165,7 @@ function EnhancedTable() {
     const [page, setPage] = useState(0);
 
     // 1ページの件数
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     // const [selected, setSelected] = React.useState([]);
 

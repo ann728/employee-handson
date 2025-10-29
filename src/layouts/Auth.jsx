@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 
 import { CssBaseline, Paper } from "@mui/material";
 
-// import { ReactComponent as Logo } from "@/vendor/logo.svg";
+import { ReactComponent as Logo } from "@/vendor/logo.svg";
 
 import Settings from "@/components/Settings";
 import GlobalStyle from "@/components/GlobalStyle";
@@ -19,12 +19,12 @@ const Root = styled.div`
   flex-direction: column;
 `;
 
-// const Brand = styled(Logo)`
-//   fill: ${(props) => props.theme.palette.primary.main};
-//   width: 64px;
-//   height: 64px;
-//   margin-bottom: 32px;
-// `;
+const Brand = styled(Logo)`
+  fill: ${(props) => props.theme.palette.primary.main};
+  width: 64px;
+  height: 64px;
+  margin-bottom: 32px;
+`;
 
 const Wrapper = styled(Paper)`
   padding: ${(props) => props.theme.spacing(6)};
@@ -39,7 +39,7 @@ const Auth = ({ children }) => {
     <Root>
       <CssBaseline />
       <GlobalStyle />
-      {/*<Brand />*/}
+      <Brand />
       <Wrapper>
         {children}
         <Outlet />
