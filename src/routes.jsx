@@ -6,6 +6,8 @@ import EmployeeList from "@/pages/EmployeeList";
 import DepartmentList from "@/pages/DepartmentList";
 import EmployeeForm from "@/pages/EmployeeForm";
 import SignIn from "@/pages/SignIn";
+//import FileUpload from "@/pages/FileUpload";
+import Settings from "@/pages/FileUpload";
 
 const routes = [
     // {
@@ -38,6 +40,10 @@ const routes = [
                 path: "edit/:id",
                 element: <EmployeeForm/>,
             },
+            {
+                path: "file",
+                element: <Settings/>,
+            }
         ],
     },
     {

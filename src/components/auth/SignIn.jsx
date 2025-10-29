@@ -160,8 +160,6 @@ function SignIn() {
                 </Link>
             </Centered>
         </form>
-
-
     );
 }
 

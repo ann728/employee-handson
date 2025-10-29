@@ -1,4 +1,4 @@
-import { Users, Building, Layout } from "lucide-react";
+import {Users, Building, Layout, Files} from "lucide-react";
 
 const dashboardItems = [
     {
@@ -15,6 +15,16 @@ const dashboardItems = [
                 icon: Building,
             },
         ],
+    },
+    {
+        title: "設定",
+        pages: [
+            {
+                href: "/file",
+                title: "ファイルアップロード",
+                icon: Files,
+            }
+        ]
     },
 ];
 

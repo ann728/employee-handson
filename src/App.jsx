@@ -14,7 +14,7 @@ import dashboardItems from "./components/sidebar/dashboardItems";
 import EmployeeList from "./pages/EmployeeList";
 import DepartmentList from "./pages/DepartmentList";
 import EmployeeForm from "./pages/EmployeeForm";
-import Login from "./pages/Login";
+//import Login from "./pages/Login";
 import useAuthStore from "./store/useAuthStore";
 import {ThemeProvider} from "@mui/material/styles";
 import createTheme from "@/theme";
