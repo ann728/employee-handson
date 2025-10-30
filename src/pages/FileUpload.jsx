@@ -2,9 +2,7 @@ import React, {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
 import {
     Box,
-    Button,
     Grid,
-    Link,
     Paper,
     Typography,
     Breadcrumbs as MuiBreadcrumbs,
@@ -15,7 +13,7 @@ import {
     LinearProgress,
 } from '@mui/material';
 import {Helmet} from "react-helmet-async";
-import {NavLink} from "react-router-dom";
+// import {NavLink} from "react-router-dom";
 import styled from "@emotion/styled";
 import {spacing} from "@mui/system";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
@@ -36,17 +34,50 @@ const TextField = styled(MuiTextField)(spacing);
 function FileUpload() {
 
     const [files, setFiles] = useState([]);
-    const [progress, setProgress] = React.useState(100);
+    const [progress, setProgress] = React.useState(0);
 
-    const onDrop = useCallback(acceptedFiles => {
+    const onDrop = useCallback(async (acceptedFiles) => {
         console.log(acceptedFiles);
         // setFile(acceptedFiles[0]);
-        setFiles(acceptedFiles);
+        // setFiles(acceptedFiles);
+        // setFiles((prev) => [...prev, ...acceptedFiles]);
+        const newFiles = acceptedFiles.map((file) => ({
+            id: Date.now() + file.name,
+            file,
+        }));
+
+        setFiles((prev) => [...prev, ...newFiles]);
+
+        // setProgress(0);
+        //
+        // let current = 0;
+        // const timer = setInterval(() => {
+        //     current += 10;
+        //     setProgress(current);
+        //     if (current >= 100) clearInterval(timer);
+        // }, 200);
+
+        for (const file of acceptedFiles) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const res = await fetch("http://localhost:3000/uploads", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                console.log("POST結果:", res.status);
+            } catch (err) {
+                console.error("送信失敗:", err);
+            }
+        }
+
     }, []);
 
     const formatFileSizeMB = (bytes) => {
         const mb = bytes / (1024 * 1024);
-        return mb.toFixed(2) + ' MB'; // 小数点2桁
+        return mb.toFixed(2) + ' MB';
     };
 
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
@@ -64,8 +95,6 @@ function FileUpload() {
                     alignItems: "center",
                     justifyContent: "center",
                     border: "3px dotted #9e9e9e",
-                    //borderColor: isDragActive ? "#1976d2" : "#9e9e9e",
-                    //backgroundColor: isDragActive ? "#f0f7ff" : "transparent",
                     borderColor: (theme) =>
                         isDragActive ? theme.palette.primary.main : theme.palette.divider,
                     backgroundColor: (theme) =>
@@ -81,9 +110,9 @@ function FileUpload() {
                 <Typography sx={{fontSize: 15}}>ファイルをドラック&ドロップ</Typography>
             </Box>
 
-            {files.map((file) => (
+            {files.map(({id, file}) => (
                 <Card
-                    key={file.name}
+                    key={id}
                     sx={{
                         display: "flex",
                         alignItems: "center",
@@ -106,7 +135,7 @@ function FileUpload() {
                         </Box>
                     </Box>
                     <DeleteIcon onClick={() => {
-                        setFiles(files.filter(f => f.name !== file.name));
+                        setFiles((prev) => prev.filter((f) => f.id !== id));
                     }}/>
                 </Card>
             ))}
@@ -136,7 +165,6 @@ function Settings() {
             <Divider my={6}/>
             <Grid container spacing={6}>
                 <Grid size={12}>
-                    {/*<TextFields onSubmitRef={onSubmitRef}/>*/}
                     <FileUpload/>
                 </Grid>
             </Grid>
