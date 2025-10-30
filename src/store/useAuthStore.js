@@ -1,7 +1,7 @@
 // src/store/useAuthStore.js
 import {create} from 'zustand'
 import {persist} from 'zustand/middleware'
-import {employeeService} from '../services/api.js'
+import {employeeService, rememberMeService} from '../services/api.js'
 
 const useAuthStore = create(
     persist(
@@ -21,6 +21,8 @@ const useAuthStore = create(
 
             isLoggedIn: false,
 
+            remember: false,
+
             setUser: (userData) =>
                 set({
                     id: userData.id,
@@ -34,7 +36,7 @@ const useAuthStore = create(
 
                 }),
 
-            login: async (email, password) => {
+            login: async (email, password, remember = false) => {
                 try {
                     set({loading: true, error: null});
 
@@ -47,7 +49,13 @@ const useAuthStore = create(
                     }
 
                     get().setUser(user);
-                    set({isLoggedIn: true});
+                    set({isLoggedIn: true, remember});
+
+                    //remember meチェック時
+                    if (remember) {
+                        const token = await rememberMeService.create(user.id);
+                        localStorage.setItem('rememberMeToken', token);
+                    }
                     return true;
                 } catch (err) {
                     set({error: 'ログインに失敗しました'});
@@ -57,7 +65,57 @@ const useAuthStore = create(
 
                 }
             },
-            logout: () =>
+
+            //自動ログイン
+            //ページ初期表示時にlocalStorage内のトークンをチェック
+            autoLogin: async () => {
+                const token = localStorage.getItem('rememberMeToken');
+                if (!token) {
+                    return false;
+                }
+
+                const user_token = await rememberMeService.get(token);
+                if (!user_token) {
+                    return false;
+                }
+
+                // 有効期限切れの場合は削除
+                const now = new Date();
+                const expires = new Date(user_token.expires_at);
+                if (now > expires) {
+                    await rememberMeService.delete(token);
+                    localStorage.removeItem('rememberMeToken');
+                    return false;
+                }
+
+                // 期限内ユーザー情報再取得
+                const user = await employeeService.get(user_token.user_id);
+                get().setUser(user);
+                set({isLoggedIn: true, remember: true});
+                return true;
+            },
+            // logout: () =>
+            //     set({
+            //         id: null,
+            //         name: '',
+            //         email: '',
+            //         phone: '',
+            //         departmentId: null,
+            //         roleId: null,
+            //         password: '',
+            //         error: null,
+            //         isLoggedIn: false,
+            //     }),
+
+            logout: async () => {
+                const {remember} = get();
+                if (remember) {
+                    const token = localStorage.getItem('rememberMeToken');
+                    if (token) {
+                        await rememberMeService.delete(token);
+                        localStorage.removeItem('rememberMeToken');
+                    }
+                }
                 set({
                     id: null,
                     name: '',
@@ -68,7 +126,9 @@ const useAuthStore = create(
                     password: '',
                     error: null,
                     isLoggedIn: false,
-                }),
+                    remember: false,
+                })
+            }
         }),
         {
             name: 'user-storage'

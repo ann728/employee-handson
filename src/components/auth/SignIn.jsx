@@ -2,6 +2,9 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import styled from "@emotion/styled";
 import {Link as RouterLink} from "react-router-dom";
+import {Controller} from "react-hook-form";
+// import { v4 as uuid } from "uuid";
+
 // import * as Yup from "yup";
 // import {Formik} from "formik";
 
@@ -41,16 +44,18 @@ const loginSchema = z.object({
         .email("正しいメールアドレスを入力してください")
         .nonempty("メールアドレスは必須です"),
     password: z.string().nonempty("パスワードは必須です"),
+    remember: z.boolean().optional(),
 });
 
 function SignIn() {
     const navigate = useNavigate();
-    const {login, error, loading, isLoggedIn} = useAuthStore();
+    const {login, autoLogin, error, loading, isLoggedIn} = useAuthStore();
     const [rehydrated, setRehydrated] = useState(false);
 
     //const { signIn } = useAuth();
 
     const {
+        control,
         register,
         handleSubmit,
         formState: {errors, isSubmitting},
@@ -60,13 +65,26 @@ function SignIn() {
     });
 
     const onSubmit = async (data) => {
-        const success = await login(data.email, data.password);
+        console.log("送信データ:", data);
+        const success = await login(data.email, data.password, data.remember,);
         if (!success) return;
 
         navigate("/employees", {
             state: {showSnackbar: true, message: "ログインが完了しました"},
         });
     };
+
+    useEffect(() => {
+        const tryAutoLogin = async () => {
+            const success = await autoLogin();
+            if (success) {
+                navigate("/employees", {
+                    state: {showSnackbar: true, message: "自動ログインしました"},
+                });
+            }
+        };
+        tryAutoLogin();
+    }, [autoLogin, navigate])
     // const handleClose = (event, reason) => {
     //     if (reason === 'clickaway') {
     //         return;
@@ -104,44 +122,70 @@ function SignIn() {
                     {error}
                 </Alert>
             )}
-            <TextField
-                type="email"
+            <Controller
                 name="email"
-                label="メールアドレス"
-                // value={values.email}
-                // error={Boolean(touched.email && errors.email)}
-                error={!!errors.email}
-                fullWidth
-                helperText={errors.email?.message}
-                // helperText={touched.email && errors.email}
-                // onBlur={handleBlur}
-                // onChange={handleChange}
-                {...register("email")}
-                my={2}
+                control={control}
+                render={({field}) => (
+                    <TextField
+                        {...field}
+                        label="メールアドレス"
+                        type="email"
+                        fullWidth
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                        my={2}
+                    />
+                )}
             />
-            <TextField
-                type="password"
+            <Controller
                 name="password"
-                label="パスワード"
-                // value={values.password}
-                // error={Boolean(touched.password && errors.password)}
-                fullWidth
-                // helperText={touched.password && errors.password}
-                // onBlur={handleBlur}
-                // onChange={handleChange}
-                {...register("password")}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                my={2}
+                control={control}
+                render={({field}) => (
+                    <TextField
+                        {...field}
+                        label="パスワード"
+                        type="password"
+                        fullWidth
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                        my={2}
+                    />
+                )}
             />
             <Typography as="div" mb={2} variant="caption">
                 <Link to="../reset-password" component={RouterLink}>
                     パスワードを忘れてしまった場合
                 </Link>
             </Typography>
-            <FormControlLabel
-                control={<Checkbox  {...register("remember")} color="primary"/>}
-                label="ログイン状態を保持しますか"
+            {/*<FormControlLabel*/}
+            {/*    control={*/}
+            {/*    <Checkbox*/}
+            {/*        {...register("remember")}*/}
+            {/*        color="primary"*/}
+            {/*        onChange={(e) => {*/}
+            {/*            e.target.value = e.target.checked;*/}
+            {/*        }}*/}
+            {/*    />}*/}
+            {/*    label="ログイン状態を保持しますか"*/}
+
+            {/*/>*/}
+            <Controller
+                name="remember"
+                control={control}
+                render={({field}) => (
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={!!field.value}
+                                {...field}
+                                //onChange={(e) => field.onChange(e.target.checked)} // ← ここが最重要！！
+                                name={field.name}
+                                color="primary"
+                            />
+                        }
+                        label="ログイン状態を保持しますか"
+                    />
+                )}
             />
             <Button
                 type="submit"
