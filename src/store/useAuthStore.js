@@ -21,6 +21,7 @@ const useAuthStore = create(
 
             isLoggedIn: false,
 
+            //rememberチェックフラグ
             remember: false,
 
             setUser: (userData) =>
